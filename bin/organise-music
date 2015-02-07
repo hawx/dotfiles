@@ -1,0 +1,95 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+#
+# Usage: organise-music [--dry-run] --music|--playlists
+#
+#   Organises the music library at MUSIC_ROOT so that all files within are named
+#   according to the rules in 'music_util.rb'. With the '--playlists' flag will
+#   instead rename files referenced in playlists to the correct names.
+#
+require_relative 'music_util'
+
+# This script will reorganise a folder of music into a common structure. Beware!
+# it will just move files based on metadata so if you have a bunch of files with
+# no artist, album and track data they will be squashed into "Unknown
+# Artist/Unknown Album/Unknown Track.mp3".
+#
+# The structure followed goes (in order-ish of preference):
+# - "Album Artist/Album/Disc-Track Title.ext"
+# - "Album Artist/Album/Track Title.ext"
+# - "Album Artist/Album/Title.ext"
+# - "Artist/Album/Disc-Track Title.ext"
+# - "Artist/Album/Track Title.ext"
+# - "Artist/Album/Title.ext"
+# - ...
+# - "Unknown Artist/Unknown Album/Unknown Track.ext"
+#
+# This is totally based on the metadata contained in the file, so if it doesn't
+# exist or can't be read it will drop to defaults.
+#
+# You may need to change the constants at the top to have your MUSIC_ROOT and
+# PLAYLIST_ROOT correct, I use an environment variable for MUSIC_ROOT
+#
+# Anyway to run, you will probably want to preview results:
+#
+#   $ organise-music --dry-run --music > results.txt
+#
+# If you are happy with this (hint: search for unknowns and fix!) fix playlists
+# first, then music, otherwise playlists will be un-fixable:
+#
+#   $ organise-music --playlists
+#   $ organise-music --music
+#
+# Afterwards delete empty folders with a quick
+#
+#   $ find "$MUSIC_ROOT" -depth -empty -type d -delete'
+#
+# And hopefully everything is nicely organised.
+
+MUSIC_ROOT = Pathname.new(ENV['MUSIC_ROOT'])
+PLAYLIST_ROOT = Pathname.new("/home/hawx/.config/mpd/playlists")
+
+def fix_music(root, dry_run)
+  Dir[root + '**' + '*.*'].each do |path|
+    next if Dir.exist?(path)
+
+    corrected_path = path_for_song(root, path).to_s
+    if path != corrected_path
+      unless dry_run
+        FileUtils.mkdir_p File.dirname(corrected_path)
+        FileUtils.mv path, corrected_path
+      end
+      puts "mv #{path} #{corrected_path}"
+    end
+  end
+end
+
+def fix_playlists(playlist_root, dry_run)
+  Dir[playlist_root + '**' + '*'].each do |path|
+    next if Dir.exist?(path)
+
+    contents = File.read(path).split("\n").map {|line|
+      if line.empty? || line[0] == "#"
+        line
+      else
+        path_for_song(line)
+      end
+    }.join("\n")
+
+    unless dry_run
+      File.write(path, contents)
+    end
+    puts "Wrote: #{path}"
+  end
+end
+
+if File.identical?(__FILE__, $0)
+  dry_run = !!ARGV.delete("--dry-run")
+
+  case ARGV[0]
+  when "--music"
+    fix_music MUSIC_ROOT, dry_run
+  when "--playlists"
+    fix_playlists PLAYLIST_ROOT, dry_run
+  end
+end

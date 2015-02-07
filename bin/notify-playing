@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+notify-send -u critical \
+  -i "`song-art`" \
+  "`mpc current -f %artist%`" "`mpc current -f %title%`"

@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'digest/md5'
+require 'fileutils'
+require 'lastfm'
+require "open-uri"
+
+CACHE_DIR = "/tmp/song-art"
+LASTFM_KEY = ENV['LASTFM_KEY']
+
+def _path(album, artist)
+  CACHE_DIR + "/" + Digest::MD5.hexdigest(album + ":" + artist)
+end
+
+def _url(album, artist)
+  lastfm = Lastfm.new(LASTFM_KEY, nil)
+  resp = lastfm.album.get_info(artist: artist, album: album)
+  small = resp['image'].find {|h| h['size'] == 'medium' }
+  small['content']
+end
+
+def artpath(album, artist)
+  path = _path(album, artist)
+  return path if File.exist?(path)
+
+  FileUtils.mkdir_p(CACHE_DIR)
+  url = _url(album, artist)
+  open(url) do |remote|
+    File.open(path, 'wb') {|local| local.puts(remote.read) }
+  end
+
+  path
+end
+
+puts artpath(`mpc current -f %album%`, `mpc current -f %artist%`)

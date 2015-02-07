@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+#
+# Usage: add-music [--dry-run] FILE...
+#
+#   Adds music to the music library at MUSIC_ROOT using the rules in
+#   'music_util.rb'.
+#
+require_relative 'music_util'
+
+MUSIC_ROOT = Pathname.new(ENV['MUSIC_ROOT'])
+
+def add_songs(songs, dry_run)
+  puts "Dry run" if dry_run
+
+  last_dir = nil
+  songs.each do |song|
+    this_path = path_for_song(MUSIC_ROOT, song)
+    this_dir = File.dirname(this_path)
+
+    if this_dir != last_dir
+      puts this_dir
+      FileUtils.mkdir_p(this_dir) unless dry_run
+      last_dir = this_dir
+    end
+
+    puts "  " + File.basename(this_path)
+    FileUtils.cp(song, this_path) unless dry_run
+  end
+end
+
+if File.identical?(__FILE__, $0)
+  dry_run = !!ARGV.delete("--dry-run")
+
+  add_songs(ARGV, dry_run)
+end

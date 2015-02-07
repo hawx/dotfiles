@@ -1,0 +1,10 @@
+# name: font-face
+# key: font-face
+# --
+@font-face {
+    font-family: '$1';
+    src: url($1.eot);
+    src: local('$1'), url($1.otf) format('opentype');
+}
+
+$0

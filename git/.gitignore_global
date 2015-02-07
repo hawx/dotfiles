@@ -1,0 +1,13 @@
+*.rbc
+*.pyc
+*.swp
+*~
+.#*
+.DS_Store
+*.ignore
+
+.bundle
+*.gem
+.yardoc
+.sass-cache
+

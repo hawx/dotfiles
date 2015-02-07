@@ -1,0 +1,19 @@
+"mpc toggle"
+  c:172
+  XF86AudioPlay
+
+"mpc prev"
+  c:173
+  XF86AudioPrev
+
+"mpc next"
+  c:171
+  XF86AudioNext
+
+"/home/hawx/dev/dotfiles/bin/notify-playing"
+  c:74
+  F8
+
+"/home/hawx/dev/bin/ashuffle --only 10"
+  c:75
+  F9

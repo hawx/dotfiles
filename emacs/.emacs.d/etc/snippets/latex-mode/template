@@ -1,0 +1,25 @@
+# name: template
+# key: template
+# --
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper}
+\usepackage{graphicx}
+\usepackage{amssymb}
+
+\usepackage{fontspec,xltxtra,xunicode}
+\defaultfontfeatures{Mapping=tex-text}
+\setromanfont[Mapping=tex-text]{Hoefler Text}
+\setsansfont[Scale=MatchLowercase,Mapping=tex-text]{Gill Sans}
+\setmonofont[Scale=MatchLowercase]{Andale Mono}
+
+\title{Brief Article}
+\author{The Author}
+% \date{}                                  % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+$0
+
+\end{document}

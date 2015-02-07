@@ -1,0 +1,5 @@
+# name: inst
+# key: inst
+# --
+(definst ${1:inst-name} [${2:arg list}]
+  (let [$0]))

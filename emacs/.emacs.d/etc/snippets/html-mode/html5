@@ -1,0 +1,14 @@
+# name: html5
+# key: html5
+# --
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="css/screen.css" type="text/css" />
+  </head>
+  <body>
+    $0
+  </body>
+</html>

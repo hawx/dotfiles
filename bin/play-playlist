@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+CHOSEN=`mpc lsplaylists | selecta`
+
+if [ "$CHOSEN" != "" ]; then
+  mpc clear
+  mpc load "$CHOSEN"
+  mpc play
+fi

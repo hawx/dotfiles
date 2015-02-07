@@ -1,0 +1,7 @@
+# name: ns
+# key: ns
+# --
+(ns ${1:name}
+  (:use [overtone.live]
+        [overtone.inst.piano]
+        [overtone.inst.synth]))$0

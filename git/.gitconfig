@@ -1,0 +1,47 @@
+[user]
+	name = Joshua Hawxwell
+	email = m@hawx.me
+
+[core]
+	excludesfile = ~/.gitignore_global
+  pager = less -FRSX
+  whitespace= fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	quotepath = false
+
+[alias]
+  st = status -sb
+  df = diff --word-diff
+  dfc = diff --word-diff --cached
+  co = checkout
+  cb = checkout -b
+  b = branch
+  m = merge
+  undo = reset --soft HEAD~1
+  lg = log --oneline --decorate
+  graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+[color]
+  branch = auto
+  diff = auto
+  interactive = auto
+  pager = true
+  status = auto
+  ui = true
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+[push]
+	default = simple
