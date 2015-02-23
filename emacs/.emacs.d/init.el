@@ -2,7 +2,7 @@
   "Byte-compile all your dotfiles."
   (interactive)
   (byte-recompile-directory user-emacs-directory 0))
-(byte-compile-init-dir)
+;; (byte-compile-init-dir)
 
 ;; Create a variable to store the path to this dotfile directory
 ;; (Usually ~/.emacs.d)
