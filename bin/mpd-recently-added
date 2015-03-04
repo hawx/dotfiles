@@ -1,0 +1,169 @@
+#!/bin/zsh
+
+# mpd-recently-added: Dynamically creates a MPD playlist of recently added
+#   tracks. When called as a daemon, mpdpl will connect to a running MPD server
+#   and wait for changes in MPD's db.  Otherwise, mpdpl will generate the
+#   playlist and exit immediately.
+#
+# Warning: ZSH-isms abound!
+
+# Taken from: https://github.com/jsks/home/blob/f1541092c769b85d0a38f1143a07e8d2bb669f7b/scripts/bin/mpdpl
+
+#####
+
+zmodload zsh/net/tcp
+
+HOST=localhost
+PORT=6600
+PID=$XDG_RUNTIME_DIR/mpdpl.pid
+LOGFILE=$XDG_CACHE_HOME/mpdpl.log
+MPDCONF=$XDG_CONFIG_HOME/mpd/mpd.conf
+PLAYLIST=recently_added.m3u
+DAYS=30
+
+function help() {
+  cat <<EOF
+Usage: mpd-recently-added [OPTIONS] [OPTIONAL COMMAND]
+
+  MPD "recently-added" playlist generator
+
+ Options:
+    -l || --log:    Log activity to LOGFILE
+
+ Commands:
+    start:  Start background daemon that waits for MPD
+    database changes to create/re-create playlist.
+    stop:   Stop daemon
+    help:   Print help
+
+
+If called with no command, mpd-recently-added will generate
+a playlist and then exit.
+EOF
+}
+
+function error() {
+  echo "Error: $1" >&2
+  exit 113
+}
+
+function logger() {
+  echo "$(date +"%b %d, %H:%M> ")$*" >>$LOGFILE
+}
+
+function parse_conf() {
+  logger "Parsing configuration file for $1"
+  len=${#1}
+  while read line; do
+    if [ ${line[1,$len]} = "$1" ]; then
+      echo $(tr -d '\t"\ ' <<< ${line[$len+1,-1]})
+    fi
+  done < <(egrep -v "^#|^$" $MPDCONF)
+}
+
+function check_dir() {
+  logger "Checking permissions"
+  local playlist=$PLAYLIST_DIR/$PLAYLIST
+
+  if [ ! -w $PLAYLIST_DIR ]; then
+    logger "Permissions for $PLAYLIST_DIR failed, exiting"
+    error "Playlist directory $PLAYLIST_DIR not writable."
+  fi
+
+  if [[ -f $playlist && ! -w $playlist ]]; then
+    logger "Permissions for $playlist failed, exiting"
+    error "Playlist $playlist not writable."
+  fi
+}
+
+function connect_mpd() {
+  ztcp $HOST $PORT 2>/dev/null
+  [ $? -ne 0 ] && error "MPD connection to $HOST:$PORT refused."
+
+  fd=$REPLY
+}
+
+function echo_mpd() {
+  echo "$1" >&$fd
+}
+
+function idle_loop() {
+  logger "Entering idle loop, waiting for $1 event"
+  echo_mpd "idle $1"
+  while read line; do
+    if [[ $line =~ "changed:" ]]; then
+      echo $line
+      echo_mpd "idle $1"
+    fi
+  done <&$fd
+}
+
+function generate_playlist() {
+  local playlist=$PLAYLIST_DIR/$PLAYLIST
+
+  logger "Creating $playlist"
+  : > $playlist
+
+  logger "Populating $playlist"
+  for i in $MUSIC_DIR/**/*(.m-$DAYS); do
+    if [[ "$i" =~ "\.mp3" ]]; then
+      echo "$i"
+    fi
+  done >> $playlist && logger "Successfully filled $playlist"
+}
+
+function start_daemon() {
+  [ ! -f $PID ] || error "Daemon already running? PID: $(<$PID)"
+  [ $(pidof mpd) ] || error "MPD not running."
+
+  connect_mpd && logger "Connected to MPD: $HOST:$PORT"
+
+  logger "Forking..."
+  (trap "logger 'Exiting forked process'; echo_mpd close; ztcp -c; rm $PID" KILL INT TERM
+    while read -r line; do
+      logger "Event: $line"
+      [ $AUTO_UPDATE = "yes" ] && sleep 60
+      generate_playlist
+      logger "Returning to idle loop"
+    done < <(idle_loop database)) &!
+
+  echo $! > $PID
+  logger "Forked as $(<$PID)"
+}
+
+function stop_daemon() {
+  [ -f $PID ] || error "Daemon not running."
+
+  echo "Stopping daemon..."
+  kill $(<$PID) && logger "Sent signal to forked daemon. Exiting $?..."
+}
+
+
+zparseopts -D -- l=LOG -log=LOG
+[ $LOG ] || LOGFILE="/dev/null"
+
+logger "Starting mpdpl..."
+
+[ "$*" = "stop" ] && { stop_daemon; exit 0 }
+
+MUSIC_DIR=$(parse_conf "music_directory")
+PLAYLIST_DIR=$(parse_conf "playlist_directory")
+AUTO_UPDATE=$(parse_conf "auto_update")
+
+check_dir
+
+if [ "$*" = "start" ]; then
+  logger "Entering daemon mode."
+  start_daemon
+elif [ "$*" = "help" ]; then
+  help && exit 0
+elif [ -z "$*" ]; then
+  logger "Entering single creation mode."
+  echo -ne "Generating playlist..."
+  generate_playlist
+  logger "Exiting... $?"
+  echo "Finished"
+else
+  help
+  echo"" && error "Invalid command"
+fi
