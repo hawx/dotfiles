@@ -1,0 +1,3 @@
+bind 3 change-window recently_added
+bind f filter
+bind F clear-filters
