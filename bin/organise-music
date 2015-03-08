@@ -49,36 +49,67 @@ require_relative 'music_util'
 MUSIC_ROOT = Pathname.new(ENV['MUSIC_ROOT'])
 PLAYLIST_ROOT = Pathname.new("/home/hawx/.config/mpd/playlists")
 
-def fix_music(root, dry_run)
+def music_changes(root)
+  return enum_for(:music_changes, root) unless block_given?
+
   Dir[root + '**' + '*.*'].each do |path|
     next if Dir.exist?(path)
 
     corrected_path = path_for_song(root, path).to_s
     if path != corrected_path
-      unless dry_run
-        FileUtils.mkdir_p File.dirname(corrected_path)
-        FileUtils.mv path, corrected_path
-      end
-      puts "mv #{path} #{corrected_path}"
+      yield [path, corrected_path]
     end
   end
 end
 
-def fix_playlists(playlist_root, dry_run)
+def list_music(enumerator)
+  enumerator.each do |current, correct|
+    puts "mv #{current} #{correct}"
+  end
+end
+
+def fix_music(enumerator)
+  enumerator.each do |current, correct|
+    FileUtils.mkdir_p File.dirname(correct)
+    FileUtils.mv current, correct
+    puts "mv #{current} #{correct}"
+  end
+end
+
+def playlist_changes(music_root, playlist_root)
+  return enum_for(:playlist_changes, music_root, playlist_root) unless block_given?
+
   Dir[playlist_root + '**' + '*'].each do |path|
     next if Dir.exist?(path)
 
+    changed = false
     contents = File.read(path).split("\n").map {|line|
       if line.empty? || line[0] == "#"
         line
       else
-        path_for_song(line)
+        new_line = path_for_song(music_root, line).to_s
+        if new_line != line
+          changed = true
+        end
+        new_line
       end
     }.join("\n")
 
-    unless dry_run
-      File.write(path, contents)
-    end
+    yield [path, contents] if changed
+  end
+end
+
+def list_playlists(enumerator)
+  enumerator.each do |path, contents|
+    puts "Changed: #{path}"
+    puts contents
+    puts ""
+  end
+end
+
+def fix_playlists(enumerator)
+  enumerator.each do |path, contents|
+    File.write(path, contents)
     puts "Wrote: #{path}"
   end
 end
@@ -88,8 +119,19 @@ if File.identical?(__FILE__, $0)
 
   case ARGV[0]
   when "--music"
-    fix_music MUSIC_ROOT, dry_run
+    changes = music_changes(MUSIC_ROOT)
+    if dry_run
+      list_music(changes)
+    else
+      fix_music(changes)
+    end
+
   when "--playlists"
-    fix_playlists PLAYLIST_ROOT, dry_run
+    changes = playlist_changes(MUSIC_ROOT, PLAYLIST_ROOT)
+    if dry_run
+      list_playlists(changes)
+    else
+      fix_playlists(changes)
+    end
   end
 end
