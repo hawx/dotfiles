@@ -15,3 +15,7 @@ function swap_emacs() {
   mv ~/.emacs.d.other ~/.emacs.d
   mv ~/.emacs.d.tmp ~/.emacs.d.other
 }
+
+function uplogtail() {
+  tail -f $XDG_CACHE_HOME/upstart/$1.log
+}

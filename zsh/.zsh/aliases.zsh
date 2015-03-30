@@ -13,3 +13,5 @@ alias update-tweets='grailbird_updater ~/Documents/tweets'
 
 alias e="emacsclient -t"
 alias kill_emacs="emacsclient -e '(kill-emacs)'"
+
+alias open="xdg-open"

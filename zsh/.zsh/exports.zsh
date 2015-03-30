@@ -4,6 +4,7 @@ export PATH=/usr/local/heroku/bin:$PATH
 export PATH=$HOME/.anaconda/bin:$PATH
 export PATH=$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH
 export PATH=$HOME/dev/go/bin:$PATH
+export PATH=$HOME/dev/camlistore/bin:$PATH
 export PATH=$HOME/dev/dotfiles/bin:$PATH
 export PATH=$HOME/dev/bin:$PATH
 
@@ -43,3 +44,4 @@ export CLASSPATH=$HOME/dev/java/junit-4.11.jar:$CLASSPATH
 export ALEXANDRIA_LIBRARY=$HOME/Books/alexandria
 export MIRROR_ROOT=$HOME/mirrors/_data
 export MUSIC_ROOT=$HOME/Music
+export SOCKET_DIR=$XDG_RUNTIME_DIR/socketandserve
