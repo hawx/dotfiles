@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+# I seem to have some tracks missing, for example, Track 2 on Suck It And See or
+# Track 3 on Basscadet. I bet this has to do with my hubrical reorganisation of
+# my whole library. This script should find all the albums in my collection with
+# "gaps" that is tracks 1,2,..,i-1,i+1,...,n-1,n where n = total tracks. [If
+# total tracks doesn't exist then assume we have the last track?] Then report
+# the album name.
+
+require 'pathname'
+require 'taglib'
+
+def albums(root)
+  Dir.foreach(root)
+end
+
+def find_gaps(ar)
+  (ar.first..ar.last).to_a - ar
+end
+
+def find_missing_tracks(enumerator)
+  enumerator.each do |album_dir|
+    tracks = Dir[album_dir + '*.*']
+    nums = tracks.map {|track|
+      TagLib::FileRef.open(track) {|ref|
+        ref.tag.track unless ref.null?
+      }
+    }
+
+    next if nums == []
+
+    gaps = find_gaps(nums.sort)
+    unless gaps.empty?
+      puts "#{album_dir} : #{gaps}"
+    end
+  end
+end
+
+root = Pathname.new(ARGV.first)
+find_missing_tracks Pathname.glob(root + '*' + '*')
