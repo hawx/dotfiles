@@ -1,3 +1,9 @@
-bind 3 change-window recently_added
+bind 3 change-window recently-added
+bind 4 change-window Mixtapes
 bind f filter
 bind F clear-filters
+
+set columns=artist track title album genre length
+set scroll=relative
+
+color fields.genre grey
