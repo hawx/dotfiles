@@ -116,6 +116,7 @@ end
 
 if File.identical?(__FILE__, $0)
   dry_run = !!ARGV.delete("--dry-run")
+  puts "Dry run..."
 
   case ARGV[0]
   when "--music"
