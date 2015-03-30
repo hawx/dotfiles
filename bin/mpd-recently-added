@@ -18,7 +18,7 @@ PORT=6600
 PID=$XDG_RUNTIME_DIR/mpdpl.pid
 LOGFILE=$XDG_CACHE_HOME/mpdpl.log
 MPDCONF=$XDG_CONFIG_HOME/mpd/mpd.conf
-PLAYLIST=recently_added.m3u
+PLAYLIST=recently-added.m3u
 DAYS=30
 
 function help() {
