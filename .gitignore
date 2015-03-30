@@ -4,8 +4,8 @@ emacs/.emacs.d/elpa/
 emacs/.emacs.d/url/
 emacs/.emacs.d/eshell/
 *.elc
-upstart/.config/mpdrobble/config.toml
 
 ## FILES WITH SECRETS ##
 
 zsh/.zsh/secure.zsh
+upstart/.config/mpd-scrobbler/config.toml
