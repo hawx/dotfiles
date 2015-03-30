@@ -1,9 +1,34 @@
 #!/usr/bin/env sh
 
-CHOSEN=`mpc lsplaylists | selecta`
+CHOSEN=$(mpc lsplaylists | selecta)
+resp=$(echo "listplaylistinfo \"$CHOSEN\"" | nc 127.0.0.1 6600)
+info=$(echo "${resp}" | grep -E '(^Title:|^Artist:)')
+info=$(echo "${info}" | awk '{
+  gsub(/Artist: /, "")
+  gsub(/Title: /, " - ")
+  if (NR % 2)
+    printf("%s", $0)
+  else
+    printf("%s\\n", $0)
+  }')
 
-if [ "$CHOSEN" != "" ]; then
-  mpc clear
-  mpc load "$CHOSEN"
-  mpc play
-fi
+echo "\\n"
+echo $info
+
+while true; do
+  read -p "Add [yn]?" yn
+  case $yn in
+    [Yy]* )
+      if [ "$CHOSEN" != "" ]; then
+        mpc load "$CHOSEN"
+      fi
+      break
+      ;;
+    [Nn]* )
+      exit
+      ;;
+    * )
+      echo "Please answer yes or no."
+      ;;
+  esac
+done
