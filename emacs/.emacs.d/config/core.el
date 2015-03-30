@@ -33,6 +33,7 @@
 
 ;;; LANGUAGES
 
+(load-lang-config "ampl")
 (load-lang-config "bnf")
 (load-lang-config "clojure")
 (load-lang-config "coffee")
