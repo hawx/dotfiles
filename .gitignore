@@ -8,4 +8,4 @@ emacs/.emacs.d/eshell/
 ## FILES WITH SECRETS ##
 
 zsh/.zsh/secure.zsh
-upstart/.config/mpd-scrobbler/config.toml
+mpd/.config/mpd-scrobbler/config.toml
