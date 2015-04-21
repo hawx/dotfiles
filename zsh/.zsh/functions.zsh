@@ -19,3 +19,7 @@ function swap_emacs() {
 function uplogtail() {
   tail -f $XDG_CACHE_HOME/upstart/$1.log
 }
+
+__git_files () {
+  _wanted files expl 'local files' _files
+}
