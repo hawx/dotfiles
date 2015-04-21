@@ -13,6 +13,9 @@
 
   ;; autocomplete
   (require 'go-autocomplete)
-  (require 'auto-complete-config))
+  (require 'auto-complete-config)
+
+  (add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
+  (require 'golint))
 
 (add-hook 'go-mode-hook 'go-mode-setup)
