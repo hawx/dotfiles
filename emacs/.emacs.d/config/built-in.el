@@ -118,6 +118,7 @@
                         mustache-mode
                         mwe-log-commands
                         nginx-mode
+                        olivetti
                         paredit
                         popup
                         rainbow-delimiters
