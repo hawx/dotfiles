@@ -1,0 +1,85 @@
+#!/usr/bin/env ruby
+#
+# Usage: clippings-to-html < in.json > out.html
+#
+#   This takes a json file in the style of hawx.me/code/kindle-clippings format
+#   and creates a human friendly webpage from it. So you'll probably end up
+#   using:
+#
+#     kindle-clippings /my/Kindle | clippings-to-html > some/index.html
+#
+
+require 'json'
+require 'tilt'
+require 'sass'
+require 'slim'
+
+template = <<EOS
+doctype html
+html lang="en"
+  head
+    meta charset="utf-8"
+    title Clippings
+    sass:
+      $menuwidth: 255px
+
+      body
+        font-size: 14px
+
+      .menu
+        overflow-y: auto
+        overflow-x: hidden
+        position: fixed
+        width: $menuwidth
+        top: 0
+        left: 0
+        bottom: 0
+        padding: 15px 5px 25px 15px
+
+        h1
+          font-size: 14px
+
+        h3
+          font-size: 14px
+          font-weight: normal
+          margin-bottom: 0
+
+        ul
+          list-style: none
+          padding: 0
+          width: 1000px
+
+      .clippings
+        margin-left: $menuwidth
+
+  body
+    .menu
+      h1 Clippings
+      ul
+        - clippings.each do |author, titles|
+          h3 = author
+          ul
+            - titles.each do |title, _|
+              li
+                a href=("#" + title.object_id.to_s) = title
+
+    .clippings
+      ul
+        - clippings.each do |author, titles|
+          - titles.each do |title, list|
+            h3 id=title.object_id.to_s = [author, title].join(" by ")
+            ul
+              - list.each do |c|
+                li
+                  p = c["Content"]
+EOS
+
+s = Struct.new(:clippings).new
+s.clippings = JSON.parse(ARGF.read)
+  .find_all {|c| c["Type"] == "Highlight" }
+  .group_by {|c| c["Author"] }
+  .sort_by {|a,_| a }
+  .map {|a,l|
+    [ a, l.group_by {|c| c["Title"] }.sort_by {|t,_| t } ] }
+
+puts Slim::Template.new { template }.render(s, nil)
