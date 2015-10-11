@@ -1,7 +1,7 @@
 export PATH=/bin:/usr/bin:/usr/local/bin:$PATH
 export PATH=/usr/local/go/bin:$PATH
 export PATH=/usr/local/heroku/bin:$PATH
-export PATH=$HOME/.anaconda/bin:$PATH
+export PATH=/usr/local/cmake/bin:$PATH
 export PATH=$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH
 export PATH=$HOME/dev/go/bin:$PATH
 export PATH=$HOME/dev/camlistore/bin:$PATH

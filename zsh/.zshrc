@@ -19,3 +19,6 @@ eval "$(rbenv init -)"                     # rbenv
 
 source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.zsh/completion/pass.zsh
+
+export NVM_DIR="/home/hawx/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm

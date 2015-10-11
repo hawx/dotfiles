@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+echo Converting $1 ...
+ffmpeg -i $1 -vn -ar 44100 -ac 2 -ab 320k -f mp3 ${1%.*}.mp3
+echo Wrote ${1%.*}.mp3
