@@ -5,4 +5,8 @@ require "id3tag"
 path = ARGV.empty? ? "#{ENV['MUSIC_ROOT']}/#{`mpc current -f %file%`.chomp}" : ARGV.first
 file = File.open(path, "rb")
 tag = ID3Tag.read(file)
-puts tag.comments
+begin
+  puts tag.get_frame(:COMM).text
+rescue
+  puts tag.comments
+end
