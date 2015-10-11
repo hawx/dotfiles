@@ -5,16 +5,16 @@
 
 ;; Put autosave files (ie #foo#) and backup files (ie foo~) in the tmp dir
 ;; store all backup and autosave files in the tmp dir
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
-(setq auto-save-list-file-name
-      (concat temporary-file-directory "emacs-autosave-list"))
+(setq auto-save-list-file-name (concat temporary-file-directory "emacs-autosave-list"))
+
+;; Remove scratch buffer message
+(setq initial-scratch-message nil)
 
 ;; When you visit a file, point goes to the last place where it was when you
-;; previously visited
+;; previously visited.
 ;; Save file is set to dotfiles-tmp-dir/places
 (require 'saveplace)
 (setq-default save-place t)
@@ -73,10 +73,6 @@
 
 (setq diff-switches "-u")
 
-(when (eq system-type 'darwin)
-  ;; Work around a bug on OS X where system-name is FQDN
-  (setq system-name (car (split-string system-name "\\."))))
-
 ;; make emacs use the clipboard
 (setq x-select-enable-clipboard t)
 
@@ -86,11 +82,6 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'before-save-hook 'delete-trailing-blank-lines)
 
-;; Ignore files that fill up lists
-(add-to-list 'completion-ignored-extensions "Icon\n") ;; this works, wierdly
-(add-to-list 'completion-ignored-extensions ".DS_Store")
-(add-to-list 'completion-ignored-extensions ".dropbox")
-
 (require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
@@ -99,11 +90,13 @@
                         auto-complete
                         clojure-mode
                         coffee-mode
+                        company
                         csharp-mode
                         deft
                         durendal
                         elixir-mode
                         git-commit-mode
+                        git-timemachine
                         go-mode
                         haml-mode
                         haskell-mode
@@ -132,6 +125,7 @@
                         smooth-scrolling
                         soothe-theme
                         textmate
+                        tide
                         twilight-theme
                         undo-tree
                         w3

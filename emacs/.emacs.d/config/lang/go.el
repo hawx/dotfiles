@@ -3,7 +3,6 @@
 (autoload 'go-mode "go-mode"
   "Major mode for the Go programming language" t)
 
-(add-to-list 'completion-ignored-extensions ".6")
 (add-to-auto-mode-alist 'go-mode '("\\.go$"))
 
 (defun go-mode-setup ()
@@ -19,3 +18,4 @@
   (require 'golint))
 
 (add-hook 'go-mode-hook 'go-mode-setup)
+(add-hook 'go-mode-hook 'subword-mode)

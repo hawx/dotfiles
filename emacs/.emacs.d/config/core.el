@@ -52,6 +52,7 @@
 (load-lang-config "sass")
 (load-lang-config "shell")
 (load-lang-config "slim")
+(load-lang-config "tide")
 (load-lang-config "vodka")
 (load-lang-config "yaml")
 

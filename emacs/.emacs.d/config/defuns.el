@@ -17,7 +17,6 @@
         (kill-buffer (car buffers))
         (setq buffers (cdr buffers))))))
 
-
 (defun vendor (library)
   "Loads a library from vendor/ and loads the associated config/modes/ file if it exists"
   (let* ((file (symbol-name library))
@@ -30,7 +29,6 @@
      ((file-exists-p suffix) (require library)))
     (when (file-exists-p (concat config ".el"))
       (load config))))
-
 
 (defun delete-trailing-blank-lines ()
   "Deletes all blank lines at the end of the file."
