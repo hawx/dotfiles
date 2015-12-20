@@ -55,6 +55,7 @@
 (load-lang-config "tide")
 (load-lang-config "vodka")
 (load-lang-config "yaml")
+(load-lang-config "web")
 
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'interpreter-mode-alist '("node" . js2-mode))

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=mpd-pi
+Comment=Sound menu plugin to display mpd from my pi
+Exec=/home/hawx/dev/go/bin/mpd-sound-menu -addr music.local:6600 -name 'mpd-pi'
+Icon=mpd-sound-menu
+Type=Application

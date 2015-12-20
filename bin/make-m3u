@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'taglib'
+
+puts "#EXTM3U"
+
+ARGV.each do |file|
+  TagLib::FileRef.open(file) do |ref|
+    next unless ref
+
+    tag = ref.tag
+    props = ref.audio_properties
+
+    puts "#EXTINF:#{props.length},#{tag.artist} - #{tag.title.sub(/\[.*?\]/, '')}"
+    puts file
+  end
+end

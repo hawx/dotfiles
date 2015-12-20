@@ -4,6 +4,7 @@ export PATH=/usr/local/heroku/bin:$PATH
 export PATH=/usr/local/cmake/bin:$PATH
 export PATH=$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH
 export PATH=$HOME/dev/go/bin:$PATH
+export PATH=$HOME/.cabal/bin:$PATH
 export PATH=$HOME/dev/camlistore/bin:$PATH
 export PATH=$HOME/dev/dotfiles/bin:$PATH
 export PATH=$HOME/dev/bin:$PATH

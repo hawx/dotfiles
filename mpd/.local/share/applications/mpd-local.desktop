@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=mpd-local
+Comment=Sound menu plugin to display mpd from my laptop
+Exec=/home/hawx/dev/go/bin/mpd-sound-menu -name 'mpd-local'
+Icon=mpd-sound-menu
+Type=Application

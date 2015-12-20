@@ -129,6 +129,7 @@
                         twilight-theme
                         undo-tree
                         w3
+                        web-mode
                         yaml-mode
                         yasnippet)
   "My packages")
