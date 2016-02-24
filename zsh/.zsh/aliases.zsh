@@ -2,6 +2,8 @@ alias ls='ls -GFhL'
 alias ll='ls -l'
 alias la='ls -a'
 
+alias grep='grep --color=auto'
+
 alias ri='ri -Tf ansi'
 
 alias be='bundle exec'

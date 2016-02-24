@@ -23,3 +23,9 @@ function uplogtail() {
 __git_files () {
   _wanted files expl 'local files' _files
 }
+
+eg(){
+  MAN_KEEP_FORMATTING=1 man "$@" 2>/dev/null \
+    | sed --quiet --expression='/^E\(\x08.\)X\(\x08.\)\?A\(\x08.\)\?M\(\x08.\)\?P\(\x08.\)\?L\(\x08.\)\?E/{:a;p;n;/^[^ ]/q;ba}' \
+    | ${MANPAGER:-${PAGER:-pager -s}}
+}

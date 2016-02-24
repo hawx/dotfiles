@@ -10,6 +10,7 @@ function in_git {
 }
 
 function git_prompt_info {
+  local ok=$?
   local gitst="$(git status 2> /dev/null)"
 
   if [[ -f .git/MERGE_HEAD ]]; then
@@ -33,7 +34,12 @@ function git_prompt_info {
     #echo "%{$fg_bold[green]%}/${ref#refs/heads/}%{$reset_color%}$gitstatus$pairname"
     echo "$gitstatus"
   else
-    echo "> "
+    # echo "> "
+    if [ $ok -eq 0 ]; then
+      echo '\xe2\x86\x92 '
+    else
+      echo '\xc3\x97 '
+    fi
   fi
 }
 

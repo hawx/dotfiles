@@ -12,13 +12,7 @@ source ~/.zsh/bindkeys.zsh
 source ~/.zsh/zsh_hooks.zsh
 source ~/.zsh/secure.zsh             # git ignored, for secure stuff only!
 
-eval "$(rbenv init -)"                     # rbenv
-
-# For uni network
-[[ -z $SSH_TTY ]] && umask 007
-
 source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.zsh/completion/pass.zsh
 
-export NVM_DIR="/home/hawx/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+eval $(gpg-agent --daemon)
