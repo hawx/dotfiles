@@ -23,7 +23,6 @@ it.
     stow -t ~ git
     stow -t ~ ruby
     stow -t ~ upstart
-    stow -t ~ xbindkeys
     stow -t ~ zsh
 
 [zsh]: https://github.com/spicycode/ze-best-zsh-config
