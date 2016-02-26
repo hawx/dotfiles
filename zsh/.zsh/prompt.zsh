@@ -1,8 +1,13 @@
 # Also see http://www.acm.uiuc.edu/workshops/zsh/prompt/escapes.html
 
-function parse_git_branch {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\/git:\1/'
-}
+PROMPT_ARROW='\xe2\x86\x92'
+PROMPT_CROSS='\xc3\x97'
+PROMPT_PUSH='\xe2\x86\x91'
+PROMPT_PULL='\xe2\x86\x93'
+PROMPT_SYNC='\xe2\x86\x95'
+PROMPT_ADD='+'
+PROMPT_CHANGES='\xe2\x9a\xa1'
+PROMPT_MERGE='~'
 
 function in_git {
   git branch >/dev/null 2> /dev/null && return true
@@ -11,45 +16,47 @@ function in_git {
 
 function git_prompt_info {
   local ok=$?
-  local gitst="$(git status 2> /dev/null)"
+  local prompt="$PROMPT_ARROW "
 
-  if [[ -f .git/MERGE_HEAD ]]; then
-    if [[ ${gitst} =~ "Unmerged" ]]; then
-      gitstatus="%{$fg[red]%}~%{$reset_color%} "
-    else
-      gitstatus="%{$fg[green]%}~%{$reset_color%} "
-    fi
-  elif [[ ${gitst} =~ "Changes to be committed" ]]; then
-    gitstatus="⚡ "
-  elif [[ ${gitst} =~ "use \"git add" ]]; then
-    gitstatus="+ "
-  elif [[ -n `git checkout HEAD 2> /dev/null | grep ahead` ]]; then
-    gitstatus="↑ "
-    # down: ↓  up: ↑  both: ↕
-  else
-    gitstatus='> '
+  if [ $ok -ne 0 ]; then
+    prompt="$PROMPT_CROSS "
   fi
 
   if $(in_git); then
-    #echo "%{$fg_bold[green]%}/${ref#refs/heads/}%{$reset_color%}$gitstatus$pairname"
-    echo "$gitstatus"
-  else
-    # echo "> "
-    if [ $ok -eq 0 ]; then
-      echo '\xe2\x86\x92 '
+    local gitst="$(git status 2> /dev/null)"
+
+    if [[ -f .git/MERGE_HEAD ]]; then
+      if [[ ${gitst} =~ "Unmerged" ]]; then
+        prompt="%{$fg[red]%}$PROMPT_MERGE%{$reset_color%} "
+      else
+        prompt="%{$fg[green]%}$PROMPT_MERGE%{$reset_color%} "
+      fi
+    elif [[ ${gitst} =~ "Changes to be committed" ]]; then
+      prompt="$PROMPT_CHANGES "
+    elif [[ ${gitst} =~ "use \"git add" ]]; then
+      prompt="$PROMPT_ADD "
     else
-      echo '\xc3\x97 '
+      local gitstsb="$(git status -sb 2> /dev/null)"
+
+      if [[ ${gitstsb} =~ "ahead" ]]; then
+        if [[ ${gitstsb} =~ "behind" ]]; then
+          prompt="$PROMPT_SYNC "
+        else
+          prompt="$PROMPT_PUSH "
+        fi
+      elif [[ ${gitstsb} =~ "behind" ]]; then
+        prompt="$PROMPT_PULL "
+      fi
     fi
   fi
-}
 
-function git_branch_name {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* //'
+  echo "$prompt"
 }
 
 function git_branch_info {
   if $(in_git); then
-    echo "%{$fg[cyan]%}$(git_branch_name)%{$reset_color%}"
+    local name=`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* //'`
+    echo "%{$fg[cyan]%}$name%{$reset_color%}"
   else
     echo ""
   fi
