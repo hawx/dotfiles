@@ -1,13 +1,15 @@
-(defun byte-compile-init-dir ()
-  "Byte-compile all your dotfiles."
-  (interactive)
-  (byte-recompile-directory user-emacs-directory 0))
-;; (byte-compile-init-dir)
 
 ;; Create a variable to store the path to this dotfile directory
 ;; (Usually ~/.emacs.d)
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
+
+(defun byte-compile-init-dir ()
+  "Byte-compile all your dotfiles."
+  (interactive)
+  (byte-recompile-directory dotfiles-dir 0))
+;; (byte-compile-init-dir)
+
 
 ;; Create variables to store the path to this dotfile dir's lib etc and tmp directories
 (setq dotfiles-config-dir (concat dotfiles-dir "config/"))

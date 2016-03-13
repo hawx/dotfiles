@@ -1,5 +1,4 @@
 
-
 ;;; CORE
 
 (load-dotfile "config/bindings.el")
@@ -18,7 +17,6 @@
 (load-lib-config "auto-fill")
 (load-lib-config "compile")
 (load-lib-config "deft")
-(load-lib-config "git")
 (load-lib-config "highlight")
 (load-lib-config "ido")
 (load-lib-config "paredit")

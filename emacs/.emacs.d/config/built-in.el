@@ -95,7 +95,6 @@
                         deft
                         durendal
                         elixir-mode
-                        git-commit-mode
                         git-timemachine
                         go-mode
                         haml-mode
@@ -146,3 +145,7 @@
   (dolist (pkg hawx/packages)
     (when (not (package-installed-p pkg))
       (package-install pkg))))
+
+(require 'auto-package-update)
+(setq auto-package-update-delete-old-versions t)
+(auto-package-update-maybe)
