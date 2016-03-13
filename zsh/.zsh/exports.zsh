@@ -40,5 +40,5 @@ export SOCKET_DIR=$XDG_RUNTIME_DIR/socketandserve
 export XDG_CONFIG_HOME=$HOME/.config
 
 # PATH
-export PATH=$PATH:$GOROOT/bin:$RBENV_ROOT/bin
+export PATH=$PATH:$GOROOT/bin:$RBENV_ROOT/bin:/usr/local/cask/bin
 export PATH=$PATH:$HOME/dev/bin:$HOME/dev/dotfiles/bin:$GOPATH/bin

@@ -1,3 +1,7 @@
+(require 'cask "/usr/local/cask/cask.el")
+(cask-initialize)
+(require 'pallet)
+(pallet-mode t)
 
 ;; Create a variable to store the path to this dotfile directory
 ;; (Usually ~/.emacs.d)

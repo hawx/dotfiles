@@ -10,6 +10,10 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
 
+  ;; gotest bindings
+  (define-key go-mode-map (kbd "C-x t f") 'go-test-current-file)
+  (define-key go-mode-map (kbd "C-x t t") 'go-test-current-test)
+
   ;; autocomplete
   (require 'go-autocomplete)
   (require 'auto-complete-config)
