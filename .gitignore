@@ -5,6 +5,8 @@ emacs/.emacs.d/url/
 emacs/.emacs.d/eshell/
 *.elc
 zsh/.zsh/cache/
+mpd/.config/mpd/sticker.sql
+mpd/.config/mpd/tag_cache
 
 ## FILES WITH SECRETS ##
 
