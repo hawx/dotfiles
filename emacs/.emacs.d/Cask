@@ -68,6 +68,7 @@
 (depends-on "soothe-theme")
 (depends-on "textmate")
 (depends-on "tide")
+(depends-on "toml-mode")
 (depends-on "twilight-theme")
 (depends-on "typescript-mode")
 (depends-on "undo-tree")

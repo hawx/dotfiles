@@ -38,7 +38,9 @@ export SOCKET_DIR=$XDG_RUNTIME_DIR/socketandserve
 
 # XDG
 export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
 
 # PATH
 export PATH=$PATH:$GOROOT/bin:$RBENV_ROOT/bin:/usr/local/cask/bin
 export PATH=$PATH:$HOME/dev/bin:$HOME/dev/dotfiles/bin:$GOPATH/bin
+export PATH=$PATH:$HOME/dev/crypto-utils/bin
