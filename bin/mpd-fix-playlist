@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+#
+# Usage: mpd-fix-playlist MUSIC_ROOT < PLAYLIST > OUT
+#        mpd-fix-playlist MUSIC_ROOT PLAYLIST
+#
+#   This script runs through a standard m3u playlist and tries to fix any paths
+#   that have broken by querying mpd.
+#
+#   The second form will do an inplace replacement of the playlist.
+
+require 'ruby-mpd'
+
+MUSIC_ROOT = ARGV.first
+
+infile = STDIN
+outfile = STDOUT
+
+if ARGV[1]
+  warn ARGV[1]
+  infile = File.open(ARGV[1])
+  outfile = StringIO.new
+end
+
+mpd = MPD.new
+mpd.connect
+
+meta, length, artist, title = false, '', '', ''
+
+infile.each_line do |line|
+  begin
+    if !meta
+      if line.start_with?('#EXTINF')
+        parts = line.split(':', 2).last.rstrip
+
+        length, parts = parts.split(',', 2)
+        artist, title = parts.split(' - ', 2)
+        meta = true
+      end
+
+      outfile.puts line
+      next
+    end
+
+    meta = false
+
+    if File.exists?(line.rstrip)
+      outfile.puts line
+      next
+    end
+
+    song = mpd.where(artist: artist, title: title).sort_by {|s|
+      File.extname(s.file)
+    }.first
+
+    if song.nil?
+      warn "Could not find #{artist} - #{title}"
+      outfile.puts line
+      next
+    end
+
+    outfile.puts File.join(MUSIC_ROOT, song.file)
+  rescue
+    warn "Could not work #{line}"
+    outfile.puts line
+  end
+end
+
+mpd.disconnect
+
+if ARGV[1]
+  infile.close
+  IO.write(ARGV[1], outfile.string)
+end
