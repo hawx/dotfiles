@@ -7,16 +7,12 @@
   (define-key go-mode-map (kbd "C-x t f") 'go-test-current-file)
   (define-key go-mode-map (kbd "C-x t t") 'go-test-current-test)
 
-  ;; autocomplete
-  (require 'go-autocomplete)
-  (require 'auto-complete-config)
+  (require 'company-go)
 
-  (add-to-list 'load-path
-               (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
+  (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
   (require 'golint)
 
   (require 'go-guru)
   (go-guru-hl-identifier-mode))
 
 (add-hook 'go-mode-hook 'go-config/hook)
-(add-to-auto-mode-alist 'go-mode '("\\.go$"))

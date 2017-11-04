@@ -21,7 +21,6 @@
 (load-lib-config "highlight")
 (load-lib-config "ido")
 (load-lib-config "paredit")
-;; (load-lib-config "slime")
 (load-lib-config "smex")
 (load-lib-config "yasnippet")
 

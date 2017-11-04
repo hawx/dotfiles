@@ -8,31 +8,17 @@
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
 
-(defun byte-compile-init-dir ()
-  "Byte-compile all your dotfiles."
-  (interactive)
-  (byte-recompile-directory dotfiles-dir 0))
-;; (byte-compile-init-dir)
-
-
 ;; Create variables to store the path to this dotfile dir's lib etc and tmp directories
 (setq dotfiles-config-dir (concat dotfiles-dir "config/"))
 (setq dotfiles-lib-dir   (concat dotfiles-dir "lib/"))
 (setq dotfiles-tmp-dir   (concat dotfiles-dir "tmp/"))
 (setq dotfiles-etc-dir   (concat dotfiles-dir "etc/"))
-(setq dotfiles-theme-dir (concat dotfiles-dir "themes/"))
-(setq dotfiles-vendor-dir (concat dotfiles-dir "vendor/"))
 
 ;; Create helper fns for loading dotfile paths and files
 (defun load-dotfile (f)
   (load-file (concat dotfiles-dir f)))
 
-(defun add-load-path (p)
-  (add-to-list 'load-path p))
-
-(add-load-path dotfiles-lib-dir)
-(add-load-path dotfiles-theme-dir)
-
+(add-to-list 'load-path dotfiles-lib-dir)
 
 ;; Pull in personalised config
 (load-dotfile "config/core.el")

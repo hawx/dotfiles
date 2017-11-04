@@ -17,19 +17,6 @@
         (kill-buffer (car buffers))
         (setq buffers (cdr buffers))))))
 
-(defun vendor (library)
-  "Loads a library from vendor/ and loads the associated config/modes/ file if it exists"
-  (let* ((file (symbol-name library))
-         (normal (concat dotfiles-vendor-dir file))
-         (suffix (concat normal ".el"))
-         (config (concat dotfiles-config-dir "modes/" file)))
-    (cond
-     ((file-directory-p normal) (add-to-list 'load-path normal) (require library))
-     ((file-directory-p suffix) (add-to-list 'load-path suffix) (require library))
-     ((file-exists-p suffix) (require library)))
-    (when (file-exists-p (concat config ".el"))
-      (load config))))
-
 (defun delete-trailing-blank-lines ()
   "Deletes all blank lines at the end of the file."
   (interactive)
@@ -53,6 +40,3 @@
 
 (defun add-lib-path (p)
   (add-to-list 'load-path (concat dotfiles-lib-dir p)))
-
-(defun add-vendor-path (p)
-  (add-to-list 'load-path (concat dotfiles-vendor-dir p)))
