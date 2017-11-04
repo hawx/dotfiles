@@ -5,6 +5,8 @@
 
 (global-set-key (kbd "C-c TAB") 'switch-to-previous-buffer)
 
+(global-set-key (kbd "C-x g") 'magit-status)
+
 ;; I can't deal with the default behaviour
 (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "C-RET") 'newline)
