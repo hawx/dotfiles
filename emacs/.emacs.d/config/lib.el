@@ -1,10 +1,14 @@
 (require 'color)
-(require 'htmlize)
-(require 'highlight)
-(require 'eval-sexp-fu)
 
 (setq-default auto-fill-mode 1)
-(setq eval-sexp-fu-flash-duration 0.5)
+
+(use-package htmlize
+  :ensure t)
+
+(use-package eval-sexp-fu
+  :ensure t
+  :config
+  (setq eval-sexp-fu-flash-duration 0.5))
 
 (use-package rainbow-delimiters
   :ensure t
@@ -92,6 +96,3 @@
   :config
   (setq yas/root-directory (concat dotfiles-etc-dir "snippets"))
   (yas-load-directory yas/root-directory))
-
-(add-hook 'prog-mode-hook 'emr-initialize)
-;; (require 'js2-refactor)

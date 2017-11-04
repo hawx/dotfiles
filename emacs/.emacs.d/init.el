@@ -14,18 +14,16 @@
 
 ;; Create variables to store the path to this dotfile dir's lib etc and tmp directories
 (setq dotfiles-config-dir (concat dotfiles-dir "config/"))
-(setq dotfiles-lib-dir   (concat dotfiles-dir "lib/"))
-(setq dotfiles-tmp-dir   (concat dotfiles-dir "tmp/"))
-(setq dotfiles-etc-dir   (concat dotfiles-dir "etc/"))
+(setq dotfiles-lib-dir    (concat dotfiles-dir "lib/"))
+(setq dotfiles-tmp-dir    (concat dotfiles-dir "tmp/"))
+(setq dotfiles-etc-dir    (concat dotfiles-dir "etc/"))
 
 ;; Create helper fns for loading dotfile paths and files
 (defun load-dotfile (f)
   (load-file (concat dotfiles-dir f)))
 
 (add-to-list 'load-path dotfiles-lib-dir)
-
-;; Pull in personalised config
-(load-dotfile "config/core.el")
+(load-dotfile "config/index.el")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
