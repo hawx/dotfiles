@@ -1,11 +1,4 @@
-(require 'go-mode)
-
-(autoload 'go-mode "go-mode"
-  "Major mode for the Go programming language" t)
-
-(add-to-auto-mode-alist 'go-mode '("\\.go$"))
-
-(defun go-mode-setup ()
+(defun go-config/hook ()
   (go-eldoc-setup)
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
@@ -25,5 +18,5 @@
   (require 'go-guru)
   (go-guru-hl-identifier-mode))
 
-(add-hook 'go-mode-hook 'go-mode-setup)
-(add-hook 'go-mode-hook 'subword-mode)
+(add-hook 'go-mode-hook 'go-config/hook)
+(add-to-auto-mode-alist 'go-mode '("\\.go$"))

@@ -1,7 +1,3 @@
-(add-vendor-path "haskell-mode")
-(autoload 'haskell-mode "haskell-mode.el"
-  "Major mode for editing Haskell files" t)
-
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
