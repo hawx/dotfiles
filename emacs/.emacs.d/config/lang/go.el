@@ -18,8 +18,12 @@
   (require 'go-autocomplete)
   (require 'auto-complete-config)
 
-  (add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
-  (require 'golint))
+  (add-to-list 'load-path
+               (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
+  (require 'golint)
+
+  (require 'go-guru)
+  (go-guru-hl-identifier-mode))
 
 (add-hook 'go-mode-hook 'go-mode-setup)
 (add-hook 'go-mode-hook 'subword-mode)

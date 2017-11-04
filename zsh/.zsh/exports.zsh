@@ -41,6 +41,7 @@ export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 
 # PATH
-export PATH=$PATH:$GOROOT/bin:$RBENV_ROOT/bin:/usr/local/cask/bin
+export PATH=$PATH:$GOROOT/bin:$RBENV_ROOT/bin:/usr/local/cask/bin:$HOME/.cargo/bin
+export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/dev/bin:$HOME/dev/dotfiles/bin:$GOPATH/bin
 export PATH=$PATH:$HOME/dev/crypto-utils/bin

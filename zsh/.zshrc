@@ -14,3 +14,9 @@ source ~/.zsh/secure.zsh             # git ignored, for secure stuff only!
 
 source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.zsh/completion/pass.zsh
+
+if [ `which fortune` ]; then
+  echo ""
+  fortune clippings
+  echo ""
+fi

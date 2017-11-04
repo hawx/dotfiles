@@ -19,6 +19,7 @@
   undo = reset --soft HEAD~1
   lg = log --oneline --decorate
   graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  append = commit --amend --no-edit
 
 [color]
   branch = auto

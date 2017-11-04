@@ -37,6 +37,7 @@
 (load-lang-config "coffee")
 (load-lang-config "css")
 (load-lang-config "elixir")
+(load-lang-config "elm")
 (load-lang-config "go")
 (load-lang-config "haml")
 (load-lang-config "haskell")
