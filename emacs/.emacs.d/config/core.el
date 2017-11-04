@@ -1,31 +1,10 @@
-
 ;;; CORE
 
 (load-dotfile "config/bindings.el")
 (load-dotfile "config/built-in.el")
 (load-dotfile "config/defuns.el")
 (load-dotfile "config/theme.el")
-
-;;; LIBS
-
-(global-company-mode)
-(global-undo-tree-mode)
-(subword-mode)
-(setq-default auto-fill-mode 1)
-(require 'smooth-scrolling)
-(require 'rainbow-delimiters)
-(require 'mwe-log-commands)
-(require 'htmlize)
-
-(load-lib-config "deft")
-(load-lib-config "highlight")
-(load-lib-config "ido")
-(load-lib-config "paredit")
-(load-lib-config "smex")
-(load-lib-config "yasnippet")
-
-(add-hook 'prog-mode-hook 'emr-initialize)
-;; (require 'js2-refactor)
+(load-dotfile "config/lib.el")
 
 ;;; LANGUAGES
 

@@ -34,9 +34,3 @@
 
 (defun load-lang-config (p)
   (load (concat dotfiles-config-dir "lang/" p)))
-
-(defun load-lib-config (p)
-  (load (concat dotfiles-config-dir "lib/" p)))
-
-(defun add-lib-path (p)
-  (add-to-list 'load-path (concat dotfiles-lib-dir p)))

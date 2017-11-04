@@ -1,5 +1,0 @@
-(setq deft-extension "txt")
-(setq deft-directory "~/Documents/Notes/")
-(setq deft-text-mode 'markdown-mode)
-(setq deft-use-filename-as-title t)
-(global-set-key [f8] 'deft)

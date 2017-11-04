@@ -16,3 +16,4 @@
   (go-guru-hl-identifier-mode))
 
 (add-hook 'go-mode-hook 'go-config/hook)
+(add-hook 'go-mode-hook 'subword-mode)
