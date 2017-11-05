@@ -7,7 +7,6 @@
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-
 (setq auto-save-list-file-name (concat temporary-file-directory "emacs-autosave-list"))
 
 ;; Remove scratch buffer message
@@ -25,11 +24,6 @@
 (require 'cua-rect)
 (cua-mode 1)
 (setq cua-enable-cua-keys nil)
-
-;; enable winner mode for C-c-(<left>|<right>) to navigate the history
-;; of buffer changes i.e. undo a split screen
-(when (fboundp 'winner-mode)
-      (winner-mode 1))
 
 (setq visible-bell t
       column-number-mode t
@@ -55,9 +49,10 @@
 (prefer-coding-system 'utf-8)
 (ansi-color-for-comint-mode-on)
 
-(set-default 'indent-tabs-mode nil)
 (auto-compression-mode t)
 (show-paren-mode 1)
+(setq-default indent-tabs-mode nil)
+(setq-default standard-indent 2)
 (setq-default tab-width 2)
 (setq-default c-basic-offset 2)
 
@@ -80,6 +75,3 @@
 
 ;; remove all trailing whitespace and trailing blank lines before saving the file
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'before-save-hook 'delete-trailing-blank-lines)
-
-(require 'package)

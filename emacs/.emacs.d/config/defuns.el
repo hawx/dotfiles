@@ -16,21 +16,3 @@
       (when (not (member (car buffers) safe))
         (kill-buffer (car buffers))
         (setq buffers (cdr buffers))))))
-
-(defun delete-trailing-blank-lines ()
-  "Deletes all blank lines at the end of the file."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (goto-char (point-max))
-      (delete-blank-lines))))
-
-(defun add-to-auto-mode-alist (mode values)
-  "Adds the values to the the auto-mode-alist for mode."
-  (let (v)
-    (dolist (e values v)
-      (add-to-list 'auto-mode-alist (cons e mode)))))
-
-(defun load-lang-config (p)
-  (load (concat dotfiles-config-dir "lang/" p)))
