@@ -87,3 +87,10 @@
   :config
   (add-to-list 'projectile-globally-ignored-files "node-modules")
   (projectile-global-mode))
+
+(use-package editorconfig
+  :config (editorconfig-mode 1))
+
+(use-package multiple-cursors
+  :bind (("C-c >" . mc/mark-next-like-this)
+         ("C-c <" . mc/mark-previous-like-this)))

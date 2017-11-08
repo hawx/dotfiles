@@ -56,6 +56,9 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
   (add-to-list 'completion-ignored-extensions ".hi")
   (add-to-list 'completion-ignored-extensions ".o"))
+(use-package inf-ruby
+  :config
+  (add-hook 'ruby-mode-hook #'inf-ruby-minor-mode))
 
 (use-package ruby-mode
   :bind (:map ruby-mode-map ("RET" . reindent-then-newline-and-indent))
@@ -66,8 +69,6 @@
   :mode "Gemfile"
   :mode "Capfile"
   :mode "Guardfile"
-  :ensure ruby-mode
-  :ensure inf-ruby
   :config
   (add-to-list 'completion-ignored-extensions ".rbc")
   (add-hook 'ruby-mode-hook 'ruby-refactor-mode-launch))
