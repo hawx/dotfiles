@@ -94,3 +94,7 @@
 (use-package multiple-cursors
   :bind (("C-c >" . mc/mark-next-like-this)
          ("C-c <" . mc/mark-previous-like-this)))
+
+(use-package olivetti
+  :config
+  (setq olivetti-hide-mode-line t))
