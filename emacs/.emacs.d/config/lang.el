@@ -33,13 +33,15 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
 
-  (require 'company-go)
-
+  (set (make-local-variable 'company-backends) '(company-go))
   (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
-  (require 'golint)
 
-  (require 'go-guru)
   (go-guru-hl-identifier-mode))
+
+(use-package company-go)
+(use-package go-eldoc)
+(use-package go-guru)
+(use-package golint)
 
 (use-package go-mode
   :defer t
@@ -56,6 +58,11 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
   (add-to-list 'completion-ignored-extensions ".hi")
   (add-to-list 'completion-ignored-extensions ".o"))
+
+(use-package js2-mode)
+
+(use-package markdown-mode)
+
 (use-package inf-ruby
   :config
   (add-hook 'ruby-mode-hook #'inf-ruby-minor-mode))
@@ -74,18 +81,14 @@
   (add-hook 'ruby-mode-hook 'ruby-refactor-mode-launch))
 
 (use-package rust-mode
-  :defer t
   :config
   (setq rust-format-on-save t))
 
-(use-package sass-mode
-  :defer t)
+(use-package sass-mode)
 
-(use-package scss-mode
-  :defer t)
+(use-package scss-mode)
 
 (use-package sh-script
-  :defer t
   :mode "\\.sh$"
   :mode "\\.zsh$"
   :mode "zshrc"
@@ -106,6 +109,8 @@
   :defer t
   :config (add-hook 'typescript-mode-hook 'typescript-config/hook))
 
+(use-package typescript-mode)
+
 (require 'vodka-mode)
 
 (defun web-config/hook ()
@@ -124,6 +129,8 @@
   :mode "\\.mustache$"
   :mode "\\.html?$"
   :config (add-hook 'web-mode-hook 'web-config/hook))
+
+(use-package yaml-mode)
 
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'interpreter-mode-alist '("node" . js2-mode))

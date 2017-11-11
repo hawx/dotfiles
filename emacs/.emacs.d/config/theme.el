@@ -1,4 +1,5 @@
-(load-theme 'twilight t)
+(use-package twilight-theme
+  :config (load-theme 'twilight t))
 
 (global-hl-line-mode 1)
 (ansi-color-for-comint-mode-on)
