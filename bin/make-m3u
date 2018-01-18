@@ -2,7 +2,10 @@
 
 require 'taglib'
 
-puts "#EXTM3U"
+if ARGV[0] == "--prefix"
+  puts "#EXTM3U"
+  ARGV.shift
+end
 
 ARGV.each do |file|
   TagLib::FileRef.open(file) do |ref|
