@@ -1,0 +1,11 @@
+bind 3 change-window recently-added
+bind 4 change-window Mixtapes
+bind f filter
+bind F clear-filters
+
+set columns=artist track title album genre length
+set scroll=centered
+
+set topbar=%time_elapsed% %playstate% %time_remaining% (%progresspercentage%%%)\t %artist% \tVol: %volume%%%  Mode: %muteshort%%consumeshort%%repeatshort%%randomshort%%singleshort%\n\t%title%\n%listsize%\t %album% (%year%) \tQ: %livequeuesize%\n\n
+
+color fields.genre grey
