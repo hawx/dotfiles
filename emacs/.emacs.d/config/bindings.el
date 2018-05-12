@@ -50,3 +50,24 @@ _v_ariable       _u_ser-option
   ("g" goto-line "go")
   ("m" set-mark-command "mark" :bind nil)
   ("q" nil "quit"))
+
+(defun mode-is-on (name)
+  (and (boundp name)
+       (or (eq (eval name) 't)
+           (eq (eval name) 1))))
+
+(defhydra hydra-toggle (:color blue)
+  "
+_a_ auto-fill-mode   %(mode-is-on 'auto-fill-mode)
+_f_ follow-mode      %(mode-is-on 'follow-mode)
+_o_ olivetti-mode    %(mode-is-on 'olivetti-mode)
+_s_ subword-mode     %(mode-is-on 'subword-mode)
+_w_ whitespace-mode  %(mode-is-on 'whitespace-mode)
+"
+  ("a" auto-fill-mode)
+  ("f" follow-mode)
+  ("o" olivetti-mode)
+  ("s" subword-mode)
+  ("w" whitespace-mode)
+  ("q" nil "cancel"))
+(global-set-key (kbd "C-c t") 'hydra-toggle/body)
