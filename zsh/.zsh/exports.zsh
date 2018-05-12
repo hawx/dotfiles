@@ -16,8 +16,11 @@ export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -t"
 
 # Ruby
-export RBENV_ROOT=/usr/local/rbenv
-eval "$($RBENV_ROOT/bin/rbenv init -)"
+which rbenv &> /dev/null
+if [ $? -eq 0 ]; then
+  export RBENV_ROOT=/usr/local/rbenv
+  eval "$($RBENV_ROOT/bin/rbenv init -)"
+fi
 
 # Node
 export NVM_DIR=/usr/local/nvm
