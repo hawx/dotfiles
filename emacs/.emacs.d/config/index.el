@@ -1,6 +1,6 @@
-(load-dotfile "config/bindings.el")
 (load-dotfile "config/built-in.el")
 (load-dotfile "config/defuns.el")
 (load-dotfile "config/theme.el")
 (load-dotfile "config/lib.el")
 (load-dotfile "config/lang.el")
+(load-dotfile "config/bindings.el")

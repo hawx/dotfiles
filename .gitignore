@@ -7,6 +7,7 @@ emacs/.emacs.d/eshell/
 zsh/.zsh/cache/
 mpd/.config/mpd/sticker.sql
 mpd/.config/mpd/tag_cache
+emacs/.emacs.d/projectile-bookmarks.eld
 
 ## FILES WITH SECRETS ##
 
