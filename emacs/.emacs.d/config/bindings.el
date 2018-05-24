@@ -58,16 +58,27 @@ _v_ariable       _u_ser-option
 
 (defhydra hydra-toggle (:color blue)
   "
-_a_ auto-fill-mode   %(mode-is-on 'auto-fill-mode)
-_f_ follow-mode      %(mode-is-on 'follow-mode)
-_o_ olivetti-mode    %(mode-is-on 'olivetti-mode)
-_s_ subword-mode     %(mode-is-on 'subword-mode)
-_w_ whitespace-mode  %(mode-is-on 'whitespace-mode)
+_a_ auto-fill-mode         %(mode-is-on 'auto-fill-mode)
+_e_ editorconfig-mode      %(mode-is-on 'editorconfig-mode)
+_f_ follow-mode            %(mode-is-on 'follow-mode)
+_o_ olivetti-mode          %(mode-is-on 'olivetti-mode)
+_s_ subword-mode           %(mode-is-on 'subword-mode)
+_t_ toggle-truncate-lines
+_w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 "
   ("a" auto-fill-mode)
+  ("e" editorconfig-mode)
   ("f" follow-mode)
   ("o" olivetti-mode)
   ("s" subword-mode)
+  ("t" toggle-truncate-lines)
   ("w" whitespace-mode)
   ("q" nil "cancel"))
 (global-set-key (kbd "C-c t") 'hydra-toggle/body)
+
+(defhydra hydra-window-sizing ()
+  ("[" shrink-window-horizontally)
+  ("]" enlarge-window-horizontally)
+  ("b" balance-windows :color blue)
+  ("q" nil "cancel" :color blue))
+(global-set-key (kbd "C-c w") 'hydra-window-sizing/body)

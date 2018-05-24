@@ -59,7 +59,12 @@
   (add-to-list 'completion-ignored-extensions ".hi")
   (add-to-list 'completion-ignored-extensions ".o"))
 
-(use-package js2-mode)
+(use-package js2-mode
+  :config
+  (setq js2-strict-trailing-comma-warning t)
+  (setq js2-strict-inconsistent-return-warning nil)
+  (setq js2-mode-show-strict-warnings nil)
+  (setq js2-basic-offset 2))
 
 (use-package markdown-mode)
 

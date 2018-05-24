@@ -49,6 +49,9 @@
 (prefer-coding-system 'utf-8)
 (ansi-color-for-comint-mode-on)
 
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired nil))
+
 (auto-compression-mode t)
 (show-paren-mode 1)
 (setq-default indent-tabs-mode nil)

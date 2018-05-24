@@ -2,6 +2,10 @@
 
 (setq-default auto-fill-mode 1)
 
+(use-package ag
+  :config
+  (setq ag-reuse-window 't))
+
 (use-package htmlize)
 
 (use-package eval-sexp-fu
@@ -39,12 +43,12 @@
   :init (global-undo-tree-mode))
 
 (use-package deft
+  :bind ("<f8>" . deft)
   :config
   (setq deft-extension "txt")
   (setq deft-directory "~/Documents/Notes/")
   (setq deft-text-mode 'markdown-mode)
-  (setq deft-use-filename-as-title t)
-  (global-set-key [f8] 'deft))
+  (setq deft-use-filename-as-title t))
 
 ;; Things I forget:
 ;; - Use 'C-j' to use typed text verbatim
@@ -94,7 +98,7 @@
     (setq projectile-keymap-prefix (kbd "C-c P")))
   :config
   (progn
-    (setq projectile-mode-line "​P")
+    (setq projectile-mode-line '(:eval (format "​[%s]" (projectile-project-name))))
 
     (add-to-list 'projectile-globally-ignored-files "node-modules")
 
@@ -175,5 +179,29 @@
 (use-package olivetti
   :config
   (setq olivetti-hide-mode-line t))
+
+(use-package flycheck
+  :init (global-flycheck-mode)
+  :config
+  (progn
+    ;; disable some checkers
+    (setq-default flycheck-disabled-checkers
+                  (append flycheck-disabled-checkers
+                          '(javascript-jshint json-jsonlint)))
+
+    (when (memq window-system '(mac ns))
+      (exec-path-from-shell-initialize))))
+
+(defun my/use-eslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/eslint/bin/eslint.js"
+                                        root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
+
+(add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
 (use-package hydra)
