@@ -59,12 +59,22 @@
   (add-to-list 'completion-ignored-extensions ".hi")
   (add-to-list 'completion-ignored-extensions ".o"))
 
+(use-package json-mode)
+
 (use-package js2-mode
+  :mode "\\.js$"
+  :interpreter "node"
   :config
   (setq js2-strict-trailing-comma-warning t)
   (setq js2-strict-inconsistent-return-warning nil)
   (setq js2-mode-show-strict-warnings nil)
-  (setq js2-basic-offset 2))
+  (setq js2-basic-offset 2)
+  (unbind-key "C-c C-o" js2-mode-map)
+  (unbind-key "C-c C-e" js2-mode-map)
+  (unbind-key "C-c C-s" js2-mode-map)
+  (unbind-key "C-c C-a" js2-mode-map)
+  (unbind-key "C-c C-n" js2-mode-map)
+  (unbind-key "C-c C-m" js2-mode-map))
 
 (use-package markdown-mode)
 
@@ -101,22 +111,26 @@
   (setq sh-indentation 2
         sh-basic-offset 2))
 
-(defun typescript-config/hook ()
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
   (setq company-tooltip-align-annotations t)
   (setq typescript-indent-level 2)
-  (tide-setup)
-  (flycheck-mode 5)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode t)
-  (company-mode-on))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  (company-mode +1))
 
 (use-package tide
-  :defer t
-  :config (add-hook 'typescript-mode-hook 'typescript-config/hook))
+  :after (js2-mode typescript-mode company flycheck)
+  :hook ((typescript-mode . setup-tide-mode)
+         (js2-mode . setup-tide-mode)))
 
 (use-package typescript-mode)
 
 (require 'vodka-mode)
+(require 'hjson-mode)
 
 (defun web-config/hook ()
   (setq web-mode-style-padding 2)

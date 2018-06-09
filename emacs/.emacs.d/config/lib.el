@@ -45,10 +45,11 @@
 (use-package deft
   :bind ("<f8>" . deft)
   :config
-  (setq deft-extension "txt")
+  (setq deft-extensions '("md"))
   (setq deft-directory "~/Documents/Notes/")
   (setq deft-text-mode 'markdown-mode)
-  (setq deft-use-filename-as-title t))
+  (setq deft-use-filename-as-title t)
+  (setq deft-use-filter-string-for-filename t))
 
 ;; Things I forget:
 ;; - Use 'C-j' to use typed text verbatim
@@ -203,5 +204,20 @@
       (setq-local flycheck-javascript-eslint-executable eslint))))
 
 (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
+
+(defun my/origami-focus ()
+  "Show only the current node, but expand everything within that node."
+  (interactive)
+  (origami-show-only-node)
+  (origami-open-node-recursively))
+
+(use-package origami
+  :init (global-origami-mode)
+  :bind (("C-c C-o" . origami-toggle-node)
+         ("C-c C-e" . origami-close-node)
+         ("C-c C-s" . origami-open-node)
+         ("C-c C-a" . origami-open-all-nodes)
+         ("C-c C-n" . origami-show-only-node)
+         ("C-c C-m" . origami-open-node-recursively)))
 
 (use-package hydra)

@@ -11,4 +11,5 @@
 
 (set-background-color "black")
 (set-face-inverse-video-p 'vertical-border nil)
+(set-face-attribute 'region nil :background "#555")
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))

@@ -3,6 +3,9 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        cua-cut-region
+        cua-paste
+        typescript-insert-and-indent
         ))
 
 (setq mc/cmds-to-run-once
