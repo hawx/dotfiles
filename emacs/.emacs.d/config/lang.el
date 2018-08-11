@@ -1,3 +1,8 @@
+(use-package add-node-modules-path
+  :config
+  (add-node-modules-path)
+  :hook (js2-mode typescript-mode))
+
 (defun clojure-config/hook ()
   (rainbow-delimiters-mode)
 
@@ -62,6 +67,7 @@
 (use-package json-mode)
 
 (use-package js2-mode
+  :after (add-node-modules-path)
   :mode "\\.js$"
   :interpreter "node"
   :config
@@ -75,6 +81,13 @@
   (unbind-key "C-c C-a" js2-mode-map)
   (unbind-key "C-c C-n" js2-mode-map)
   (unbind-key "C-c C-m" js2-mode-map))
+
+(use-package eslint-fix
+  :after (js2-mode)
+  :config
+  (add-hook 'js2-mode-hook
+            (lambda ()
+              (add-hook 'after-save-hook 'eslint-fix nil t))))
 
 (use-package markdown-mode)
 
@@ -113,19 +126,27 @@
 
 (defun setup-tide-mode ()
   (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (setq company-tooltip-align-annotations t)
-  (setq typescript-indent-level 2)
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
+  (run-with-idle-timer
+   0.5 nil
+   (lambda () (progn
+                (tide-setup)
+                (flycheck-mode +1)
+                (setq flycheck-check-syntax-automatically '(save mode-enabled))
+                (flycheck-add-next-checker 'typescript-tide '(t . my-typescript-tslint) 'append)
+                (setq company-tooltip-align-annotations t)
+                (setq typescript-indent-level 2)
+                (eldoc-mode +1)
+                (tide-hl-identifier-mode +1)
+                (company-mode +1)))))
 
 (use-package tide
-  :after (js2-mode typescript-mode company flycheck)
-  :hook ((typescript-mode . setup-tide-mode)
-         (js2-mode . setup-tide-mode)))
+  :after (add-node-modules-path company flycheck)
+  :init
+  (progn
+    (add-hook 'typescript-mode-hook #'setup-tide-mode)
+    (add-hook 'js2-mode-hook #'setup-tide-mode))
+  :bind (("C-c ." . tide-references)
+         ("C-c C-r" . tide-rename-symbol)))
 
 (use-package typescript-mode)
 

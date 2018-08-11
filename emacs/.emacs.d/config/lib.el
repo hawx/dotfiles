@@ -45,9 +45,10 @@
 (use-package deft
   :bind ("<f8>" . deft)
   :config
-  (setq deft-extensions '("md"))
+  (setq deft-extension "md")
   (setq deft-directory "~/Documents/Notes/")
   (setq deft-text-mode 'markdown-mode)
+  (setq deft-auto-save-interval 0)
   (setq deft-use-filename-as-title t)
   (setq deft-use-filter-string-for-filename t))
 
@@ -92,6 +93,7 @@
   :bind ("C-x g" . magit-status))
 
 (use-package projectile
+  :defer 1
   :bind (("C-c p" . hydra-projectile/body)
          ("C-c f" . hydra-projectile/body))
   :init
@@ -154,6 +156,8 @@
 (use-package multiple-cursors
   :bind (("C-c >" . mc/mark-next-like-this)
          ("C-c <" . mc/mark-previous-like-this)
+         ("C-c M-<" . mc/edit-lines)
+         ("C-c M->" . mc/mark-all-like-this)
          ("C-c m" . multiple-cursors-hydra/body))
   :config
   (progn
@@ -188,10 +192,31 @@
     ;; disable some checkers
     (setq-default flycheck-disabled-checkers
                   (append flycheck-disabled-checkers
-                          '(javascript-jshint json-jsonlint)))
+                          '(javascript-jshint json-jsonlint emacs-lisp-checkdoc typescript-tslint)))
 
     (when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize))))
+      (exec-path-from-shell-initialize))
+
+    (flycheck-def-config-file-var flycheck-my-typescript-tsconfig
+        my-typescript-tslint "tsconfig.json"
+      :safe #'stringp
+      :package-version '(flycheck . "27"))
+
+    (flycheck-def-config-file-var flycheck-my-typescript-tslint-config
+        my-typescript-tslint "tslint.json"
+      :safe #'stringp
+      :package-version '(flycheck . "27"))
+
+    (flycheck-define-checker my-typescript-tslint
+      "TypeScript style checker using TSLint."
+      :command ("tslint" "--format" "json"
+                (config-file "--config" flycheck-my-typescript-tslint-config)
+                (config-file "--project" flycheck-my-typescript-tsconfig)
+                source-inplace)
+      :error-parser flycheck-parse-tslint
+      :modes (typescript-mode))
+
+    (add-to-list 'flycheck-checkers 'my-typescript-tslint)))
 
 (defun my/use-eslint-from-node-modules ()
   (let* ((root (locate-dominating-file
