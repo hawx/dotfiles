@@ -11,8 +11,19 @@ bindkey "^E"      end-of-line                          # ctrl-e
 # bindkey "[A"      history-search-backward              # up arrow
 # History search with up and down arrow keys
 
-[[ -n "${key[Up]}"   ]] && bindkey  "${key[Up]}"      history-beginning-search-backward
-[[ -n "${key[Down]}" ]] && bindkey  "${key[Down]}"    history-beginning-search-forward
+if [[ -n "${key[Up]}"   ]]
+then
+  bindkey  "${key[Up]}" history-beginning-search-backward
+else
+  bindkey "^[[A" history-beginning-search-backward
+fi
+
+if [[ -n "${key[Down]}" ]]
+then
+  bindkey  "${key[Down]}" history-beginning-search-forward
+else
+  bindkey "^[[B" history-beginning-search-forward
+fi
 
 bindkey "^D"      delete-char                          # ctrl-d
 bindkey "^F"      forward-char                         # ctrl-f

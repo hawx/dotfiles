@@ -20,8 +20,7 @@ if [ -s "$HOME/.asdf/asdf.sh" ]; then
   source ~/.asdf/completions/asdf.bash
 fi
 
-if [ `which fortune` ]; then
-  echo ""
+which fortune &> /dev/null
+if [ $? -eq 0 ]; then
   fortune clippings
-  echo ""
 fi

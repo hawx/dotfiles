@@ -49,6 +49,9 @@
 (prefer-coding-system 'utf-8)
 (ansi-color-for-comint-mode-on)
 
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired nil))
+
 (auto-compression-mode t)
 (show-paren-mode 1)
 (setq-default indent-tabs-mode nil)
@@ -75,3 +78,9 @@
 
 ;; remove all trailing whitespace and trailing blank lines before saving the file
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; stop ffap from using strings beginning with /
+(defadvice ffap-file-at-point (after ffap-file-at-point-after-advice ())
+  (if (string= ad-return-value "/")
+      (setq ad-return-value nil)))
+(ad-activate 'ffap-file-at-point)

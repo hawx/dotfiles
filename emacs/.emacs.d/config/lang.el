@@ -1,3 +1,8 @@
+(use-package add-node-modules-path
+  :config
+  (add-node-modules-path)
+  :hook (js2-mode typescript-mode))
+
 (defun clojure-config/hook ()
   (rainbow-delimiters-mode)
 
@@ -59,7 +64,30 @@
   (add-to-list 'completion-ignored-extensions ".hi")
   (add-to-list 'completion-ignored-extensions ".o"))
 
-(use-package js2-mode)
+(use-package json-mode)
+
+(use-package js2-mode
+  :after (add-node-modules-path)
+  :mode "\\.js$"
+  :interpreter "node"
+  :config
+  (setq js2-strict-trailing-comma-warning t)
+  (setq js2-strict-inconsistent-return-warning nil)
+  (setq js2-mode-show-strict-warnings nil)
+  (setq js2-basic-offset 2)
+  (unbind-key "C-c C-o" js2-mode-map)
+  (unbind-key "C-c C-e" js2-mode-map)
+  (unbind-key "C-c C-s" js2-mode-map)
+  (unbind-key "C-c C-a" js2-mode-map)
+  (unbind-key "C-c C-n" js2-mode-map)
+  (unbind-key "C-c C-m" js2-mode-map))
+
+(use-package eslint-fix
+  :after (js2-mode)
+  :config
+  (add-hook 'js2-mode-hook
+            (lambda ()
+              (add-hook 'after-save-hook 'eslint-fix nil t))))
 
 (use-package markdown-mode)
 
@@ -96,22 +124,34 @@
   (setq sh-indentation 2
         sh-basic-offset 2))
 
-(defun typescript-config/hook ()
-  (setq company-tooltip-align-annotations t)
-  (setq typescript-indent-level 2)
-  (tide-setup)
-  (flycheck-mode 5)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode t)
-  (company-mode-on))
+(defun setup-tide-mode ()
+  (interactive)
+  (run-with-idle-timer
+   0.5 nil
+   (lambda () (progn
+                (tide-setup)
+                (flycheck-mode +1)
+                (setq flycheck-check-syntax-automatically '(save mode-enabled))
+                (flycheck-add-next-checker 'typescript-tide '(t . my-typescript-tslint) 'append)
+                (setq company-tooltip-align-annotations t)
+                (setq typescript-indent-level 2)
+                (eldoc-mode +1)
+                (tide-hl-identifier-mode +1)
+                (company-mode +1)))))
 
 (use-package tide
-  :defer t
-  :config (add-hook 'typescript-mode-hook 'typescript-config/hook))
+  :after (add-node-modules-path company flycheck)
+  :init
+  (progn
+    (add-hook 'typescript-mode-hook #'setup-tide-mode)
+    (add-hook 'js2-mode-hook #'setup-tide-mode))
+  :bind (("C-c ." . tide-references)
+         ("C-c C-r" . tide-rename-symbol)))
 
 (use-package typescript-mode)
 
 (require 'vodka-mode)
+(require 'hjson-mode)
 
 (defun web-config/hook ()
   (setq web-mode-style-padding 2)
