@@ -15,16 +15,7 @@ export PAGER='less'
 export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -t"
 
-# Ruby
-export RBENV_ROOT=/usr/local/rbenv
-eval "$($RBENV_ROOT/bin/rbenv init -)"
-
-# Node
-export NVM_DIR=/usr/local/nvm
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
 # Go
-export GOROOT=/usr/local/go
 export GOPATH=$HOME/dev/go
 
 # Java
@@ -41,7 +32,7 @@ export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 
 # PATH
-export PATH=$PATH:$GOROOT/bin:$RBENV_ROOT/bin:/usr/local/cask/bin:$HOME/.cargo/bin
+export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/dev/bin:$HOME/dev/dotfiles/bin:$GOPATH/bin
 export PATH=$PATH:$HOME/dev/crypto-utils/bin
