@@ -238,6 +238,7 @@
 
 (use-package origami
   :init (global-origami-mode)
+  :config (add-to-list 'origami-parser-alist '(typescript-mode . origami-c-style-parser))
   :bind (("C-c C-o" . origami-toggle-node)
          ("C-c C-e" . origami-close-node)
          ("C-c C-s" . origami-open-node)
