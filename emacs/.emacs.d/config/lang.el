@@ -1,3 +1,7 @@
+(setq-default standard-indent 2)
+(setq-default tab-width 2)
+(setq-default c-basic-offset 2)
+
 (use-package add-node-modules-path
   :config
   (add-node-modules-path)
@@ -145,6 +149,8 @@
   (progn
     (add-hook 'typescript-mode-hook #'setup-tide-mode)
     (add-hook 'js2-mode-hook #'setup-tide-mode))
+  :config
+  (add-to-list 'completion-ignored-extensions ".js.map")
   :bind (("C-c ." . tide-references)
          ("C-c C-r" . tide-rename-symbol)))
 

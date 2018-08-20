@@ -62,5 +62,5 @@ function git_branch_info {
   fi
 }
 
-PROMPT='$(git_prompt_info)'
+PROMPT='%{$fg[cyan]%}%2d%{$reset_color%} $(git_prompt_info)'
 RPROMPT='$(git_branch_info)'

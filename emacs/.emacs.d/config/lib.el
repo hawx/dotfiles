@@ -1,6 +1,8 @@
 (require 'color)
-
+(show-paren-mode 1)
+(auto-compression-mode t)
 (setq-default auto-fill-mode 1)
+(setq-default indent-tabs-mode nil)
 
 (use-package ag
   :config
@@ -63,6 +65,7 @@
           ido-create-new-buffer 'always
           ido-use-filename-at-point 'guess
           ido-use-url-at-point nil
+          ido-auto-merge-work-directories-length -1
           ido-max-prospects 10)
     (ido-mode t)))
 
@@ -246,4 +249,54 @@
          ("C-c C-n" . origami-show-only-node)
          ("C-c C-m" . origami-open-node-recursively)))
 
-(use-package hydra)
+(use-package hydra
+  :config
+  (progn
+    ;; https://github.com/abo-abo/hydra/blob/master/hydra-examples.el
+    (defhydra hydra-apropos (:color blue :hint nil)
+      "
+_a_propos        _c_ommand
+_d_ocumentation  _l_ibrary
+_v_ariable       _u_ser-option
+^ ^          valu_e_"
+      ("a" apropos)
+      ("d" apropos-documentation)
+      ("v" apropos-variable)
+      ("c" apropos-command)
+      ("l" apropos-library)
+      ("u" apropos-user-option)
+      ("e" apropos-value))
+    (global-set-key (kbd "C-c h") 'hydra-apropos/body)
+
+    (defun mode-is-on (name)
+      (and (boundp name)
+           (or (eq (eval name) 't)
+               (eq (eval name) 1))))
+
+    (defhydra hydra-toggle (:color blue)
+      "
+_a_ auto-fill-mode         %(mode-is-on 'auto-fill-mode)
+_e_ editorconfig-mode      %(mode-is-on 'editorconfig-mode)
+_f_ follow-mode            %(mode-is-on 'follow-mode)
+_o_ olivetti-mode          %(mode-is-on 'olivetti-mode)
+_s_ subword-mode           %(mode-is-on 'subword-mode)
+_t_ toggle-truncate-lines
+_w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
+"
+      ("a" auto-fill-mode)
+      ("e" editorconfig-mode)
+      ("f" follow-mode)
+      ("o" olivetti-mode)
+      ("s" subword-mode)
+      ("t" toggle-truncate-lines)
+      ("w" whitespace-mode)
+      ("q" nil "cancel"))
+    (global-set-key (kbd "C-c t") 'hydra-toggle/body)))
+
+(use-package shell-pop
+  :init
+  (setq shell-pop-universal-key "C-t")
+  (setq shell-pop-autocd-to-working-dir nil)
+  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  (setq shell-pop-term-shell "/bin/zsh")
+  (setq shell-pop-full-span t))

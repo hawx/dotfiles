@@ -12,12 +12,6 @@
 ;; Remove scratch buffer message
 (setq initial-scratch-message nil)
 
-;; When you visit a file, point goes to the last place where it was when you
-;; previously visited.
-;; Save file is set to dotfiles-tmp-dir/places
-(require 'saveplace)
-(setq-default save-place t)
-
 ;; enable cua-mode for rectangular selections
 (require 'cua-base)
 (require 'cua-gmrk)
@@ -30,51 +24,27 @@
       echo-keystrokes 0.1
       font-lock-maximum-decoration t
       inhibit-startup-message t
-      transient-mark-mode t
       color-theme-is-global t
       shift-select-mode nil
-      mouse-yank-at-point t
       require-final-newline t
       truncate-partial-width-windows nil
       delete-by-moving-to-trash nil
       uniquify-buffer-name-style 'forward
       ediff-window-setup-function 'ediff-setup-windows-plain
-      xterm-mouse-mode t
-      save-place-file (concat dotfiles-tmp-dir "places"))
+      confirm-nonexistent-file-or-buffer nil
 
-(setq locale-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-(ansi-color-for-comint-mode-on)
+      ;; Prefer left-right split
+      split-height-threshold nil
+      split-width-threshold 0)
 
 (when (string= system-type "darwin")
   (setq dired-use-ls-dired nil))
 
-(auto-compression-mode t)
-(show-paren-mode 1)
-(setq-default indent-tabs-mode nil)
-(setq-default standard-indent 2)
-(setq-default tab-width 2)
-(setq-default c-basic-offset 2)
-
 (setq-default fill-column 80)
-
-;; Prefer left-right split
-(setq split-height-threshold nil)
-(setq split-width-threshold 0)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (random t) ;; Seed the random-number generator
-
-(setq diff-switches "-u")
-
-;; make emacs use the clipboard
-(setq x-select-enable-clipboard t)
-
-(setq confirm-nonexistent-file-or-buffer nil)
 
 ;; remove all trailing whitespace and trailing blank lines before saving the file
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
