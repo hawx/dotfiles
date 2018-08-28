@@ -22,3 +22,5 @@
    (lisp-interaction-mode))
 
 (global-set-key (kbd "<f1>") 'create-scratch-buffer)
+
+(windmove-default-keybindings)
