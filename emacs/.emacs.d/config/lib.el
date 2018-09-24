@@ -300,3 +300,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
   (setq shell-pop-term-shell "/bin/zsh")
   (setq shell-pop-full-span t))
+
+(use-package winner
+  :init
+  (winner-mode))

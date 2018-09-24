@@ -24,3 +24,4 @@
 (global-set-key (kbd "<f1>") 'create-scratch-buffer)
 
 (windmove-default-keybindings)
+(global-unset-key (kbd "C-x o"))

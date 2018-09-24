@@ -3,9 +3,11 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        backward-sexp
         cua-copy-region
         cua-cut-region
         cua-paste
+        forward-sexp
         indent-for-tab-command
         smex
         typescript-insert-and-autoconvert-to-template
@@ -15,6 +17,7 @@
 
 (setq mc/cmds-to-run-once
       '(
+        beginning-of-buffer
         compose-mail
         kill-region
         multiple-cursors-hydra/mc/edit-lines-and-exit

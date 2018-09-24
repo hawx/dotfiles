@@ -154,6 +154,12 @@
   :bind (("C-c ." . tide-references)
          ("C-c C-r" . tide-rename-symbol)))
 
+(require 'tslint-fix)
+
+(add-hook 'typescript-mode-hook
+          (lambda ()
+            (add-hook 'after-save-hook 'tslint-fix nil t)))
+
 (use-package typescript-mode)
 
 (require 'vodka-mode)

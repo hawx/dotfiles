@@ -11,7 +11,7 @@
 (defun clean-slate ()
   "Kills all buffers except *scratch*"
   (interactive)
-  (let ((buffers (buffer-list)) (safe '("*scratch*")))
+  (let ((buffers (buffer-list)) (safe '("*scratch*" "*Messages*")))
     (while buffers
       (when (not (member (car buffers) safe))
         (kill-buffer (car buffers))
