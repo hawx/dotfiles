@@ -7,6 +7,7 @@
         cua-copy-region
         cua-cut-region
         cua-paste
+        delete-indentation
         forward-sexp
         indent-for-tab-command
         smex
