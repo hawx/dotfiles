@@ -188,6 +188,10 @@
         ido-max-prospects 10)
   (ido-mode t))
 
+(use-package csv-mode
+  :custom
+  (csv-header-lines 1))
+
 (use-package paredit
   :init
   (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
@@ -216,7 +220,8 @@
 (use-package projectile
   :defer 1
   :bind (("C-c p" . hydra-projectile/body)
-         ("C-c f" . hydra-projectile/body))
+         ("C-c C-p" . hydra-projectile/body)
+         ("C-c C-f" . projectile-find-file))
   :config
   (define-key projectile-mode-map (kbd "C-c P") 'projectile-command-map)
 
@@ -286,14 +291,14 @@
 [_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp
 ^ ^             ^ ^             [_q_] Quit
 "
-    ("l" mc/edit-lines :exit t)
-    ("a" mc/mark-all-like-this :exit t)
-    ("n" mc/mark-next-like-this)
-    ("N" mc/skip-to-next-like-this)
-    ("M-n" mc/unmark-next-like-this)
     ("p" mc/mark-previous-like-this)
     ("P" mc/skip-to-previous-like-this)
     ("M-p" mc/unmark-previous-like-this)
+    ("n" mc/mark-next-like-this)
+    ("N" mc/skip-to-next-like-this)
+    ("M-n" mc/unmark-next-like-this)
+    ("l" mc/edit-lines :exit t)
+    ("a" mc/mark-all-like-this :exit t)
     ("r" mc/mark-all-in-region-regexp :exit t)
     ("q" nil)))
 
@@ -345,11 +350,11 @@
 
 (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
-(defun my/origami-focus ()
+(defun my/origami-focus (buffer point)
   "Show only the current node, but expand everything within that node."
-  (interactive)
-  (origami-show-only-node)
-  (origami-open-node-recursively))
+  (interactive (list (current-buffer) (point)))
+  (origami-show-only-node buffer point)
+  (origami-open-node-recursively buffer point))
 
 (use-package origami
   :init (global-origami-mode)
@@ -357,7 +362,8 @@
   :bind (("C-c C-o" . origami-toggle-node)
          ("C-c C-e" . origami-close-node)
          ("C-c C-s" . origami-open-node)
-         ("C-c C-a" . origami-open-all-nodes)
+         ("C-c C-a" . origami-reset)
+         ("C-c C-b" . my/origami-focus)
          ("C-c C-n" . origami-show-only-node)
          ("C-c C-m" . origami-open-node-recursively)))
 
@@ -448,6 +454,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package coffee-mode
   :defer t)
+
+(use-package dockerfile-mode)
 
 (use-package elm-mode
   :defer t
@@ -574,10 +582,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (require 'tslint-fix)
 
-(add-hook 'typescript-mode-hook
-          (lambda ()
-            (add-hook 'after-save-hook 'tslint-fix nil t)))
-
 (use-package typescript-mode
   :config
   (setq typescript-indent-level 2))
@@ -600,6 +604,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.erb$"
   :mode "\\.mustache$"
   :mode "\\.html?$"
+  :mode "\\.handlebars$"
   :config (add-hook 'web-mode-hook 'web-config/hook))
 
 (use-package yaml-mode)
@@ -643,7 +648,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
+    (csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
