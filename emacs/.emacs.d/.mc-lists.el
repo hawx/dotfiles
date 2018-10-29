@@ -10,6 +10,7 @@
         delete-indentation
         forward-sexp
         indent-for-tab-command
+        markdown-cycle
         smex
         typescript-insert-and-autoconvert-to-template
         typescript-insert-and-indent
@@ -21,6 +22,7 @@
         beginning-of-buffer
         compose-mail
         kill-region
+        markdown-outdent-or-delete
         multiple-cursors-hydra/mc/edit-lines-and-exit
         multiple-cursors-hydra/mc/mark-all-like-this-and-exit
         multiple-cursors-hydra/mc/mark-next-like-this

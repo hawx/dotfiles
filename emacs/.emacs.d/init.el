@@ -19,6 +19,8 @@
 (add-to-list 'load-path dotfiles-lib-dir)
 
 
+(setq gc-cons-threshold 20000000)
+
 ;;; utf8
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -186,7 +188,16 @@
         ido-use-url-at-point nil
         ido-auto-merge-work-directories-length -1
         ido-max-prospects 10)
-  (ido-mode t))
+  (ido-mode t)
+  :config
+  (add-to-list 'ido-ignore-buffers "\\*tide-server*")
+  (add-to-list 'ido-ignore-buffers "\\*ansi-term-1*")
+  (add-to-list 'ido-ignore-buffers "\\*Deft*"))
+
+(use-package flx-ido
+  :after ido
+  :config
+  (flx-ido-mode 1))
 
 (use-package csv-mode
   :custom
@@ -220,8 +231,8 @@
 (use-package projectile
   :defer 1
   :bind (("C-c p" . hydra-projectile/body)
-         ("C-c C-p" . hydra-projectile/body)
-         ("C-c C-f" . projectile-find-file))
+         ("C-c f" . projectile-find-file)
+         ("C-c b" . projectile-switch-to-buffer))
   :config
   (define-key projectile-mode-map (kbd "C-c P") 'projectile-command-map)
 
@@ -238,35 +249,19 @@
 
   (defhydra hydra-projectile (:color teal :hint nil)
     "
-     PROJECTILE: %(projectile-project-root)
-
-     Find File            Search/Tags          Buffers                Cache
-------------------------------------------------------------------------------------------
-  _f_: file            _a_: ag                _i_: Ibuffer           _c_: cache clear
-  _d_: dir             _g_: update gtags      _b_: switch to buffer  _x_: remove known project
-  _F_: file curr dir   _o_: multi-occur       _K_: Kill all buffers  _X_: cleanup non-existing
-  _r_: recent file                                               ^^^^_z_: cache current
+PROJECTILE: %(projectile-project-root)
 
 "
-    ("f"   projectile-find-file)
-    ("d"   projectile-find-dir)
-    ("F"   projectile-find-file-in-directory)
-    ("r"   projectile-recentf)
+    ("d"   projectile-find-dir "dir")
+    ("F"   projectile-find-file-in-directory "file curr dir")
 
-    ("a"   projectile-ag)
-    ("g"   ggtags-update-tags)
-    ("o"   projectile-multi-occur)
+    ("a"   projectile-ag "ag")
 
-    ("i"   projectile-ibuffer)
-    ("b"   projectile-switch-to-buffer)
-    ("K"   projectile-kill-buffers)
-
-    ("c"   projectile-invalidate-cache)
-    ("x"   projectile-remove-known-project)
-    ("X"   projectile-cleanup-known-projects)
-    ("z"   projectile-cache-current-file)
+    ("i"   projectile-ibuffer "ibuffer")
+    ("K"   projectile-kill-buffers "kill all buffers")
 
     ("s"   projectile-switch-project "switch project")
+
     ("`"   hydra-projectile-other-window/body "other window")
     ("q"   nil "cancel" :color blue))
 
@@ -512,7 +507,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (unbind-key "C-c C-s" js2-mode-map)
   (unbind-key "C-c C-a" js2-mode-map)
   (unbind-key "C-c C-n" js2-mode-map)
-  (unbind-key "C-c C-m" js2-mode-map))
+  (unbind-key "C-c C-m" js2-mode-map)
+  (unbind-key "C-c C-f" js2-mode-map))
 
 (use-package eslint-fix
   :after (js2-mode)
@@ -609,8 +605,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package yaml-mode)
 
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-(add-to-list 'interpreter-mode-alist '("node" . js2-mode))
+(defalias 'list-buffers 'ibuffer)
 
 ;;; bindings
 ;; http://www.emacswiki.org/emacs/SwitchingBuffers
@@ -618,28 +613,22 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (interactive)
   (switch-to-buffer (other-buffer)))
 
-(global-set-key (kbd "C-c TAB") 'switch-to-previous-buffer)
-
-(global-set-key (kbd "RET") 'newline-and-indent)
-(global-set-key (kbd "C-RET") 'newline)
-
-(global-set-key (kbd "C-z") "")
-(global-set-key (kbd "M-DEL") 'backward-kill-word)
-
-(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
-
-(global-set-key (kbd "<f8>") 'next-error)
-
 (defun create-scratch-buffer nil
    "create a scratch buffer"
    (interactive)
    (switch-to-buffer (get-buffer-create "*scratch*"))
    (lisp-interaction-mode))
 
-(global-set-key (kbd "<f1>") 'create-scratch-buffer)
-
 (windmove-default-keybindings)
+(global-set-key (kbd "C-c TAB") 'switch-to-previous-buffer)
+(global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-RET") 'newline)
+(global-set-key (kbd "C-z") "")
+(global-set-key (kbd "M-DEL") 'backward-kill-word)
+(global-set-key (kbd "<f1>") 'create-scratch-buffer)
 (global-unset-key (kbd "C-x o"))
+
+(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -648,7 +637,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
+    (flx-ido csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
