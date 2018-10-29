@@ -107,7 +107,6 @@
 (use-package twilight-theme
   :config (load-theme 'twilight t))
 
-(global-hl-line-mode 1)
 (ansi-color-for-comint-mode-on)
 
 ; get rid of clutter
@@ -116,9 +115,8 @@
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
 (set-background-color "black")
-(set-face-inverse-video 'vertical-border nil)
-(set-face-attribute 'region nil :background "#555")
-(set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
+(set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ? ))
+
 
 ;;; lib
 (require 'color)
@@ -638,13 +636,3 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
  '(package-selected-packages
    (quote
     (flx-ido csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-scrollbar-bg ((t (:background "#199919991999"))))
- '(company-scrollbar-fg ((t (:background "#0ccc0ccc0ccc"))))
- '(company-tooltip ((t (:inherit default :background "#0ccc0ccc0ccc"))))
- '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
- '(company-tooltip-selection ((t (:inherit font-lock-function-name-face)))))
