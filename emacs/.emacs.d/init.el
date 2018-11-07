@@ -34,41 +34,40 @@
 
 
 ;;; built-in
+
+;; better display for buffers with the same name
 (require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+;; colorise ansi codes
 (require 'ansi-color)
-(require 'recentf)
+(defun display-ansi-colors ()
+  (interactive)
+  (ansi-color-apply-on-region (point-min) (point-max)))
 
-;; Put autosave files (ie #foo#) and backup files (ie foo~) in the tmp dir
-;; store all backup and autosave files in the tmp dir
-(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-(setq auto-save-list-file-name (concat temporary-file-directory "emacs-autosave-list"))
+(setq
+ ;; Put autosave files (ie #foo#) and backup files (ie foo~) in the tmp dir
+ ;; store all backup and autosave files in the tmp dir
+ backup-directory-alist `((".*" . ,temporary-file-directory))
+ auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+ auto-save-list-file-name (concat temporary-file-directory "emacs-autosave-list")
 
-;; Remove scratch buffer message
-(setq initial-scratch-message nil)
+ ;; Remove scratch buffer message
+ initial-scratch-message nil
+ visible-bell t
+ column-number-mode t
+ echo-keystrokes 0.1
+ font-lock-maximum-decoration t
+ inhibit-startup-message t
+ shift-select-mode nil
+ require-final-newline t
+ truncate-partial-width-windows nil
+ delete-by-moving-to-trash nil
+ confirm-nonexistent-file-or-buffer nil
 
-;; enable cua-mode for rectangular selections
-(require 'cua-base)
-(require 'cua-gmrk)
-(require 'cua-rect)
-(cua-mode 1)
-(setq cua-enable-cua-keys nil)
-
-(setq visible-bell t
-      column-number-mode t
-      echo-keystrokes 0.1
-      font-lock-maximum-decoration t
-      inhibit-startup-message t
-      shift-select-mode nil
-      require-final-newline t
-      truncate-partial-width-windows nil
-      delete-by-moving-to-trash nil
-      uniquify-buffer-name-style 'forward
-      confirm-nonexistent-file-or-buffer nil
-
-      ;; Prefer left-right split
-      split-height-threshold nil
-      split-width-threshold 0)
+ ;; Prefer left-right split
+ split-height-threshold nil
+ split-width-threshold 0)
 
 (when (string= system-type "darwin")
   (setq dired-use-ls-dired nil))
@@ -76,8 +75,6 @@
 (setq-default fill-column 80)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-
-(random t) ;; Seed the random-number generator
 
 ;; remove all trailing whitespace and trailing blank lines before saving the file
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -88,20 +85,7 @@
       (setq ad-return-value nil)))
 (ad-activate 'ffap-file-at-point)
 
-;;; defuns
-(defun word-count ()
-  "Count words in buffer"
-  (interactive)
-  (shell-command-on-region (point-min) (point-max) "wc -w"))
-
-(defun clean-slate ()
-  "Kills all buffers except *scratch*"
-  (interactive)
-  (let ((buffers (buffer-list)) (safe '("*scratch*" "*Messages*")))
-    (while buffers
-      (when (not (member (car buffers) safe))
-        (kill-buffer (car buffers))
-        (setq buffers (cdr buffers))))))
+(setq ffap-machine-p-known 'reject)
 
 ;;; theme
 (use-package twilight-theme
@@ -122,8 +106,13 @@
 (require 'color)
 (show-paren-mode 1)
 (auto-compression-mode t)
+(cua-selection-mode t)
+
 (setq-default auto-fill-mode 1)
 (setq-default indent-tabs-mode nil)
+
+(use-package diminish)
+(diminish 'eldoc-mode)
 
 (use-package ag
   :config
@@ -141,28 +130,20 @@
     (add-hook hook #'rainbow-delimiters-mode)))
 
 (use-package subword
-  :diminish subword-mode
+  :diminish
   :init (global-subword-mode))
 
 (use-package company
-  :diminish company-mode
+  :diminish
   :init (global-company-mode)
   :config
   (setq company-tooltip-limit 20
         company-idle-delay .3
         company-echo-delay 0
-        company-begin-commands '(self-insert-command))
-
-  (let ((bg (face-attribute 'default :background)))
-    (custom-set-faces
-     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 5)))))
-     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-     `(company-tooltip-common ((t (:inherit font-lock-constant-face)))))))
+        company-begin-commands '(self-insert-command)))
 
 (use-package undo-tree
-  :diminish undo-tree-mode
+  :diminish
   :init (global-undo-tree-mode))
 
 (use-package deft
@@ -202,6 +183,7 @@
   (csv-header-lines 1))
 
 (use-package paredit
+  :diminish
   :init
   (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
   (add-hook 'lisp-mode-hook #'paredit-mode)
@@ -217,6 +199,7 @@
          ("C-c C-c M-x" . execute-extended-command)))
 
 (use-package yasnippet
+  :diminish yas-minor-mode
   :init
   (yas-global-mode 1)
   :config
@@ -224,9 +207,12 @@
   (yas-load-directory yas/root-directory))
 
 (use-package magit
+  :config (setq magit-process-finish-apply-ansi-colors t)
   :bind ("C-x g" . magit-status))
 
 (use-package projectile
+  :init
+  (setq projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))
   :defer 1
   :bind (("C-c p" . hydra-projectile/body)
          ("C-c f" . projectile-find-file)
@@ -252,20 +238,19 @@ PROJECTILE: %(projectile-project-root)
 "
     ("d"   projectile-find-dir "dir")
     ("F"   projectile-find-file-in-directory "file curr dir")
-
     ("a"   projectile-ag "ag")
-
     ("i"   projectile-ibuffer "ibuffer")
     ("K"   projectile-kill-buffers "kill all buffers")
-
     ("s"   projectile-switch-project "switch project")
-
+    ("b"   projectile-build-project "build project")
+    ("t"   projectile-test-project "test project")
     ("`"   hydra-projectile-other-window/body "other window")
     ("q"   nil "cancel" :color blue))
 
   (projectile-mode))
 
 (use-package editorconfig
+  :diminish
   :config (editorconfig-mode 1))
 
 (use-package multiple-cursors
@@ -305,7 +290,9 @@ PROJECTILE: %(projectile-project-root)
   ;; disable some checkers
   (setq-default flycheck-disabled-checkers
                 (append flycheck-disabled-checkers
-                        '(javascript-jshint json-jsonlint emacs-lisp-checkdoc typescript-tslint)))
+                        '(javascript-jshint json-python-json emacs-lisp-checkdoc typescript-tslint)))
+
+  (setq flycheck-checker-error-threshold 1000)
 
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize))
@@ -348,6 +335,10 @@ PROJECTILE: %(projectile-project-root)
   (interactive (list (current-buffer) (point)))
   (origami-show-only-node buffer point)
   (origami-open-node-recursively buffer point))
+
+(use-package flyspell-popup
+  :bind ("C-;" . flyspell-popup-correct)
+  :hook (flyspell-mode-hook #'flyspell-popup-auto-correct-mode))
 
 (use-package origami
   :init (global-origami-mode)
@@ -414,6 +405,10 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (use-package winner
   :init
   (winner-mode))
+
+(use-package expand-region
+  :bind (("C-c =" . er/expand-region)
+         ("C-c -" . er/contract-region)))
 
 ;;; lang
 (setq-default standard-indent 2)
@@ -624,6 +619,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (global-set-key (kbd "C-z") "")
 (global-set-key (kbd "M-DEL") 'backward-kill-word)
 (global-set-key (kbd "<f1>") 'create-scratch-buffer)
+(global-set-key (kbd "C-c q") 'kill-this-buffer)
 (global-unset-key (kbd "C-x o"))
 
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
@@ -633,6 +629,21 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(mode-line-format
+   (quote
+    ("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "  " mode-line-position mode-line-modes
+     (vc-mode vc-mode)
+     mode-line-misc-info " " mode-line-end-spaces)))
  '(package-selected-packages
    (quote
-    (flx-ido csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
+    (flyspell-popup flyspell-correct flx-ido csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-scrollbar-bg ((t (:background "#199919991999"))))
+ '(company-scrollbar-fg ((t (:background "#0ccc0ccc0ccc"))))
+ '(company-tooltip ((t (:inherit default :background "#0ccc0ccc0ccc"))))
+ '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
+ '(company-tooltip-selection ((t (:inherit font-lock-function-name-face)))))
