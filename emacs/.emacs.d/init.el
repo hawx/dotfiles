@@ -470,7 +470,9 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :defer t
   :bind (:map go-mode-map
               ("C-x t f" . go-test-current-file)
-              ("C-x t t" . go-test-current-test))
+              ("C-x t t" . go-test-current-test)
+              ("M-." . godef-jump)
+              ("M-," . pop-tag-mark))
   :init
   (setq gofmt-command "goimports")
   :config

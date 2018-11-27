@@ -15,6 +15,7 @@
         typescript-insert-and-autoconvert-to-template
         typescript-insert-and-indent
         yaml-electric-backspace
+        yaml-electric-dash-and-dot
         ))
 
 (setq mc/cmds-to-run-once
@@ -23,6 +24,7 @@
         compose-mail
         kill-region
         markdown-outdent-or-delete
+        multiple-cursors-hydra/body
         multiple-cursors-hydra/mc/edit-lines-and-exit
         multiple-cursors-hydra/mc/mark-all-like-this-and-exit
         multiple-cursors-hydra/mc/mark-next-like-this

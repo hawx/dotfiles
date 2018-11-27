@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# Usage: war somename https://...
+#
+# from https://gist.github.com/dannguyen/03a10e850656577cfb57
+
+wget -E -H -k -K -nd -N -p -P "$1" "$2"
