@@ -46,4 +46,4 @@
   untracked = cyan
 [push]
 	default = simple
-	followTags = true
+	followTags = false

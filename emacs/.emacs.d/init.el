@@ -54,6 +54,8 @@
 
  ;; Remove scratch buffer message
  initial-scratch-message nil
+ initial-major-mode 'text-mode
+
  visible-bell t
  column-number-mode t
  echo-keystrokes 0.1
@@ -142,6 +144,11 @@
         company-echo-delay 0
         company-begin-commands '(self-insert-command)))
 
+;; (use-package company-quickhelp
+;;   :config
+;;   (eval-after-load 'company
+;;     '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin)))
+
 (use-package undo-tree
   :diminish
   :init (global-undo-tree-mode))
@@ -213,6 +220,7 @@
 (use-package projectile
   :init
   (setq projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))
+  (setq projectile-indexing-method 'alien)
   :defer 1
   :bind (("C-c p" . hydra-projectile/body)
          ("C-c f" . projectile-find-file)
@@ -294,9 +302,6 @@ PROJECTILE: %(projectile-project-root)
 
   (setq flycheck-checker-error-threshold 1000)
 
-  (when (memq window-system '(mac ns))
-    (exec-path-from-shell-initialize))
-
   (flycheck-def-config-file-var flycheck-my-typescript-tsconfig
       my-typescript-tslint "tsconfig.json"
     :safe #'stringp
@@ -337,7 +342,7 @@ PROJECTILE: %(projectile-project-root)
   (origami-open-node-recursively buffer point))
 
 (use-package flyspell-popup
-  :bind ("C-;" . flyspell-popup-correct)
+  :bind ("C-c ;" . flyspell-popup-correct)
   :hook (flyspell-mode-hook #'flyspell-popup-auto-correct-mode))
 
 (use-package origami
@@ -394,13 +399,21 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
     ("q" nil "cancel"))
   (global-set-key (kbd "C-c t") 'hydra-toggle/body))
 
+(defun my/projectile-shell-pop ()
+  "Open shell-pop for projectile project"
+  (interactive)
+  (let (old-default-directory (shell-pop-default-directory))
+    (setq shell-pop-default-directory (projectile-project-root))
+    (call-interactively 'shell-pop)
+    (setq shell-pop-default-directory (old-default-directory))))
+
 (use-package shell-pop
   :init
-  (setq shell-pop-universal-key "C-t")
   (setq shell-pop-autocd-to-working-dir nil)
   (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
   (setq shell-pop-term-shell "/bin/zsh")
-  (setq shell-pop-full-span t))
+  (setq shell-pop-full-span t)
+  :bind ("C-t" . my/projectile-shell-pop))
 
 (use-package winner
   :init
@@ -626,26 +639,5 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line-format
-   (quote
-    ("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "  " mode-line-position mode-line-modes
-     (vc-mode vc-mode)
-     mode-line-misc-info " " mode-line-end-spaces)))
- '(package-selected-packages
-   (quote
-    (flyspell-popup flyspell-correct flx-ido csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-scrollbar-bg ((t (:background "#199919991999"))))
- '(company-scrollbar-fg ((t (:background "#0ccc0ccc0ccc"))))
- '(company-tooltip ((t (:inherit default :background "#0ccc0ccc0ccc"))))
- '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
- '(company-tooltip-selection ((t (:inherit font-lock-function-name-face)))))
+(setq custom-file (concat dotfiles-dir "custom.el"))
+(load custom-file 'noerror)

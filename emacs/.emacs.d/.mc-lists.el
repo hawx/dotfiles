@@ -11,9 +11,11 @@
         forward-sexp
         indent-for-tab-command
         markdown-cycle
+        sh-assignment
         smex
         typescript-insert-and-autoconvert-to-template
         typescript-insert-and-indent
+        what-cursor-position
         yaml-electric-backspace
         yaml-electric-dash-and-dot
         ))
