@@ -57,6 +57,7 @@
  initial-major-mode 'text-mode
 
  visible-bell t
+ ring-bell-function 'ignore
  column-number-mode t
  echo-keystrokes 0.1
  font-lock-maximum-decoration t
@@ -143,11 +144,6 @@
         company-idle-delay .3
         company-echo-delay 0
         company-begin-commands '(self-insert-command)))
-
-;; (use-package company-quickhelp
-;;   :config
-;;   (eval-after-load 'company
-;;     '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin)))
 
 (use-package undo-tree
   :diminish
@@ -413,7 +409,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
   (setq shell-pop-term-shell "/bin/zsh")
   (setq shell-pop-full-span t)
-  :bind ("C-t" . my/projectile-shell-pop))
+  (setq shell-pop-universal-key "C-t"))
 
 (use-package winner
   :init
