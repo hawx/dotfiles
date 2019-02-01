@@ -213,6 +213,9 @@
   :config (setq magit-process-finish-apply-ansi-colors t)
   :bind ("C-x g" . magit-status))
 
+(use-package deadgrep
+  :bind ("C-c s" . deadgrep))
+
 (use-package projectile
   :init
   (setq projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))
@@ -242,7 +245,6 @@ PROJECTILE: %(projectile-project-root)
 "
     ("d"   projectile-find-dir "dir")
     ("F"   projectile-find-file-in-directory "file curr dir")
-    ("a"   projectile-ag "ag")
     ("i"   projectile-ibuffer "ibuffer")
     ("K"   projectile-kill-buffers "kill all buffers")
     ("s"   projectile-switch-project "switch project")

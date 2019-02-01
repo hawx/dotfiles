@@ -10,7 +10,7 @@
      mode-line-misc-info " " mode-line-end-spaces)))
  '(package-selected-packages
    (quote
-    (chess company-quickhelp flyspell-popup flyspell-correct flx-ido csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
+    (deadgrep company-quickhelp flyspell-popup flyspell-correct flx-ido csv-mode shell-pop add-node-modules-path tide eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint go-guru go-eldoc company-go elm-mode coffee-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
