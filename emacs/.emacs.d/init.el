@@ -606,6 +606,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.erb$"
   :mode "\\.mustache$"
   :mode "\\.html?$"
+  :mode "\\.gotmpl$"
   :mode "\\.handlebars$"
   :config (add-hook 'web-mode-hook 'web-config/hook))
 

@@ -12,6 +12,7 @@
         indent-for-tab-command
         markdown-cycle
         sh-assignment
+        shell-pop
         smex
         typescript-insert-and-autoconvert-to-template
         typescript-insert-and-indent
