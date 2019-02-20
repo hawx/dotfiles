@@ -523,7 +523,11 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
             (lambda ()
               (add-hook 'after-save-hook 'eslint-fix nil t))))
 
-(use-package markdown-mode)
+(use-package markdown-mode
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
 
 (use-package inf-ruby
   :config
