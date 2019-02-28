@@ -91,8 +91,8 @@
 (setq ffap-machine-p-known 'reject)
 
 ;;; theme
-(use-package twilight-theme
-  :config (load-theme 'twilight t))
+(require 'twilight-theme)
+(load-theme 'twilight t)
 
 (ansi-color-for-comint-mode-on)
 
@@ -101,9 +101,7 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
-(set-background-color "black")
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ? ))
-
 
 ;;; lib
 (require 'color)
