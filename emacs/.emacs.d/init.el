@@ -456,6 +456,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package dockerfile-mode)
 
+(use-package nginx-mode)
+
 (use-package elm-mode
   :defer t
   :init
