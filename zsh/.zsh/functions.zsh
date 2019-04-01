@@ -35,3 +35,7 @@ function dir-to-mp3() {
     ffmpeg -i "$f" -codec:a libmp3lame -qscale:a 2 -map_metadata 0 "${f%.*}".mp3
   done
 }
+
+npx() {
+  node_modules/.bin/$1 "${@:2}"
+}

@@ -91,8 +91,9 @@
 (setq ffap-machine-p-known 'reject)
 
 ;;; theme
-(require 'twilight-theme)
-(load-theme 'twilight t)
+(use-package twilight-theme
+  :config
+  (load-theme 'twilight t))
 
 (ansi-color-for-comint-mode-on)
 

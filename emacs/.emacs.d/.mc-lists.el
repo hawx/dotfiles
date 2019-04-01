@@ -11,6 +11,7 @@
         forward-sexp
         indent-for-tab-command
         markdown-cycle
+        paredit-forward
         sh-assignment
         shell-pop
         smex

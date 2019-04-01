@@ -75,7 +75,7 @@
  '(font-lock-preprocessor-face ((t (:foreground "#CF6A4C"))))
  '(font-lock-reference-face ((t (:foreground "SlateBlue"))))
  '(font-lock-string-face ((t (:foreground "#8F9D6A"))))
- '(font-lock-type-face ((t (:foreground "#89788a"))))
+ '(font-lock-type-face ((t (:foreground "#9B703F"))))
  '(font-lock-variable-name-face ((t (:foreground "#7587A6"))))
  '(font-lock-warning-face ((t (:foreground "red"))))
  '(font-lock-regexp-grouping-backslash ((t (:foreground "#E9C062"))))
@@ -134,6 +134,10 @@
  '(diff-changed ((t (:background "#CDA869"))))
  '(diff-added ((t (:background  "#8F9D6A"))))
 
+ ;; markdown
+ '(markdown-header-delimiter-face ((t (:foreground "grey60"))))
+ '(markdown-markup-face ((t (:foreground "grey60"))))
+
  ;; term
  '(term-color-black ((t (:foreground "#313131" :background "#141414"))))
  '(term-color-red ((t (:foreground "#CF6A4C" :background "#a3472c"))))
@@ -141,11 +145,10 @@
  '(term-color-yellow ((t (:foreground "#efa510" :background "#CDA869"))))
  '(term-color-blue ((t (:foreground "#7587A6" :background "#5d6c84"))))
  '(term-color-magenta ((t (:foreground "#EE799F" :background "#EF2929"))))
- '(term-color-cyan ((t (:foreground "#5d8084" :background "#41595c")))))
-'(term-color-white ((t (:foreground "#CACACA" :background "#5F5A60"))))
-'(term-default-fg-color ((t (:inherit term-color-white))))
-'(term-default-bg-color ((t (:inherit term-color-black))))
-
+ '(term-color-cyan ((t (:foreground "#5d8084" :background "#41595c"))))
+ '(term-color-white ((t (:foreground "#CACACA" :background "#5F5A60"))))
+ '(term-default-fg-color ((t (:inherit term-color-white))))
+ '(term-default-bg-color ((t (:inherit term-color-black)))))
 
 (provide-theme 'twilight)
 
@@ -154,7 +157,4 @@
   (add-to-list 'custom-theme-load-path
                (file-name-as-directory (file-name-directory load-file-name))))
 
-;; Local Variables:
-;; eval: (when (require 'rainbow-mode nil t) (rainbow-mode 1))
-;; End:
 ;;; twilight-theme.el ends here
