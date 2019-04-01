@@ -16,7 +16,7 @@ export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -t"
 
 # Go
-export GOPATH=$HOME/dev/go
+export GOPATH=$HOME/.cache/go
 
 # Java
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
