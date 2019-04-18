@@ -147,6 +147,8 @@
 (use-package lsp-mode
   :commands lsp
   :hook (prog-mode . lsp)
+  :bind (("C-c ." . lsp-find-references)
+         ("C-c C-r" . lsp-rename))
   :custom
   (lsp-prefer-flymake nil)
   (lsp-auto-guess-root t)
@@ -568,31 +570,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "zshrc"
   :config
   (setq sh-basic-offset 2))
-
-(defun setup-tide-mode ()
-  (interactive)
-  (run-with-idle-timer
-   0.5 nil
-   (lambda () (progn
-                (tide-setup)
-                (flycheck-mode +1)
-                (setq flycheck-check-syntax-automatically '(save mode-enabled))
-                (flycheck-add-next-checker 'typescript-tide '(t . my-typescript-tslint) 'append)
-                (setq company-tooltip-align-annotations t)
-                (eldoc-mode +1)
-                (tide-hl-identifier-mode +1)
-                (company-mode +1)))))
-
-(use-package tide
-  :after (add-node-modules-path company flycheck)
-  :init
-  (progn
-    (add-hook 'typescript-mode-hook #'setup-tide-mode)
-    (add-hook 'js2-mode-hook #'setup-tide-mode))
-  :config
-  (add-to-list 'completion-ignored-extensions ".js.map")
-  :bind (("C-c ." . tide-references)
-         ("C-c C-r" . tide-rename-symbol)))
 
 (require 'tslint-fix)
 
