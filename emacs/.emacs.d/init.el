@@ -144,6 +144,23 @@
         company-echo-delay 0
         company-begin-commands '(self-insert-command)))
 
+(use-package lsp-mode
+  :commands lsp
+  :hook (prog-mode . lsp)
+  :custom
+  (lsp-prefer-flymake nil)
+  (lsp-auto-guess-root t)
+  (lsp-eldoc-render-all t))
+
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :custom
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-doc-enable nil))
+
+(use-package company-lsp
+  :commands company-lsp)
+
 (use-package undo-tree
   :diminish
   :init (global-undo-tree-mode))
@@ -458,33 +475,23 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (use-package nginx-mode)
 
 (use-package elm-mode
-  :defer t
+  :after (company)
   :init
   (setq elm-format-on-save t)
   :config
   (add-to-list 'company-backends 'company-elm))
 
 (defun go-config/hook ()
-  (go-eldoc-setup)
   (add-hook 'before-save-hook 'gofmt-before-save)
+  (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs")))
 
-  (set (make-local-variable 'company-backends) '(company-go))
-  (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
-
-  (go-guru-hl-identifier-mode))
-
-(use-package company-go)
-(use-package go-eldoc)
-(use-package go-guru)
 (use-package golint)
 
 (use-package go-mode
-  :defer t
+  :mode "\\(\\.go\\|go.mod\\|go.sum\\)\\'"
   :bind (:map go-mode-map
               ("C-x t f" . go-test-current-file)
-              ("C-x t t" . go-test-current-test)
-              ("M-." . godef-jump)
-              ("M-," . pop-tag-mark))
+              ("C-x t t" . go-test-current-test))
   :init
   (setq gofmt-command "goimports")
   :config

@@ -32,7 +32,8 @@ export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 
 # PATH
-export PATH=$PATH:$HOME/.cargo/bin
+export PATH=$PATH:$HOME/.cargo/bin:$GOPATH/bin
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/dev/bin:$HOME/dev/dotfiles/bin:$GOPATH/bin
 export PATH=$PATH:$HOME/dev/crypto-utils/bin
+export PATH=$PATH:$(npm bin --global 2> /dev/null)
