@@ -10,14 +10,11 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-
 (defvar dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
-
 (defvar dotfiles-lib-dir (concat dotfiles-dir "lib/"))
 (defvar dotfiles-etc-dir (concat dotfiles-dir "etc/"))
 
 (add-to-list 'load-path dotfiles-lib-dir)
-
 
 (setq gc-cons-threshold 20000000)
 
@@ -31,7 +28,6 @@
 
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
 
 ;;; built-in
 
@@ -73,7 +69,25 @@
  split-width-threshold 0)
 
 (when (string= system-type "darwin")
-  (setq dired-use-ls-dired nil))
+  (setq dired-use-ls-dired nil)
+
+  (defun pbcopy ()
+    (interactive)
+    (call-process-region (point) (mark) "pbcopy")
+    (setq deactivate-mark t))
+
+  (defun pbpaste ()
+    (interactive)
+    (call-process-region (point) (if mark-active (mark) (point)) "pbpaste" t t))
+
+  (defun pbcut ()
+    (interactive)
+    (pbcopy)
+    (delete-region (region-beginning) (region-end)))
+
+  (global-set-key (kbd "C-c c") 'pbcopy)
+  (global-set-key (kbd "C-c v") 'pbpaste)
+  (global-set-key (kbd "C-c x") 'pbcut))
 
 (setq-default fill-column 80)
 
@@ -113,23 +127,18 @@
 (setq-default auto-fill-mode 1)
 (setq-default indent-tabs-mode nil)
 
-(use-package diminish)
-(diminish 'eldoc-mode)
-
-(use-package ag
-  :config
-  (setq ag-reuse-window 't))
+(use-package diminish
+  :init
+  (diminish 'eldoc-mode))
 
 (use-package htmlize)
 
 (use-package eval-sexp-fu
-  :config
-  (setq eval-sexp-fu-flash-duration 0.5))
+  :custom
+  (eval-sexp-fu-flash-duration 0.3))
 
 (use-package rainbow-delimiters
-  :init
-  (dolist (hook '(text-mode-hook prog-mode-hook))
-    (add-hook hook #'rainbow-delimiters-mode)))
+  :hook ((text-mode prog-mode) . rainbow-delimiters-mode))
 
 (use-package subword
   :diminish
@@ -138,11 +147,11 @@
 (use-package company
   :diminish
   :init (global-company-mode)
-  :config
-  (setq company-tooltip-limit 20
-        company-idle-delay .3
-        company-echo-delay 0
-        company-begin-commands '(self-insert-command)))
+  :custom
+  (company-tooltip-limit 20)
+  (company-idle-delay .3)
+  (company-echo-delay 0)
+  (company-begin-commands '(self-insert-command)))
 
 (use-package lsp-mode
   :commands lsp
@@ -176,21 +185,18 @@
   (deft-use-filename-as-title t)
   (deft-use-filter-string-for-filename t))
 
-;; Things I forget:
-;; - Use 'C-j' to use typed text verbatim
-;; - Use 'C-d' to open current directory in dired
 (use-package ido
   :init
-  (setq ido-enable-prefix nil
-        ido-enable-flex-matching t
-        ido-create-new-buffer 'always
-        ido-use-filename-at-point 'guess
-        ido-use-url-at-point nil
-        ido-auto-merge-work-directories-length -1
-        ido-max-prospects 10)
   (ido-mode t)
+  :custom
+  (ido-enable-prefix nil)
+  (ido-enable-flex-matching t)
+  (ido-create-new-buffer 'always)
+  (ido-use-filename-at-point 'guess)
+  (ido-use-url-at-point nil)
+  (ido-auto-merge-work-directories-length -1)
+  (ido-max-prospects 10)
   :config
-  (add-to-list 'ido-ignore-buffers "\\*tide-server*")
   (add-to-list 'ido-ignore-buffers "\\*ansi-term-1*")
   (add-to-list 'ido-ignore-buffers "\\*Deft*"))
 
@@ -205,12 +211,7 @@
 
 (use-package paredit
   :diminish
-  :init
-  (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
-  (add-hook 'lisp-mode-hook #'paredit-mode)
-  (add-hook 'scheme-mode-hook #'paredit-mode)
-  (add-hook 'ielm-mode-hook #'paredit-mode)
-  (add-hook 'clojure-mode-hook #'paredit-mode))
+  :hook ((emacs-lisp-mode lisp-mode scheme-mode ielm-mode clojure-mode) . paredit-mode))
 
 (use-package smex
   :init
@@ -235,9 +236,9 @@
   :bind ("C-c s" . deadgrep))
 
 (use-package projectile
-  :init
-  (setq projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))
-  (setq projectile-indexing-method 'alien)
+  :custom
+  (projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))
+  (projectile-indexing-method 'alien)
   :defer 1
   :bind (("C-c p" . hydra-projectile/body)
          ("C-c f" . projectile-find-file)
@@ -305,8 +306,8 @@ PROJECTILE: %(projectile-project-root)
     ("q" nil)))
 
 (use-package olivetti
-  :config
-  (setq olivetti-hide-mode-line t))
+  :custom
+  (olivetti-hide-mode-line t))
 
 (use-package flycheck
   :init (global-flycheck-mode)
@@ -351,15 +352,15 @@ PROJECTILE: %(projectile-project-root)
 
 (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
+(use-package flyspell-popup
+  :bind ("C-c ;" . flyspell-popup-correct)
+  :hook (flyspell-mode-hook #'flyspell-popup-auto-correct-mode))
+
 (defun my/origami-focus (buffer point)
   "Show only the current node, but expand everything within that node."
   (interactive (list (current-buffer) (point)))
   (origami-show-only-node buffer point)
   (origami-open-node-recursively buffer point))
-
-(use-package flyspell-popup
-  :bind ("C-c ;" . flyspell-popup-correct)
-  :hook (flyspell-mode-hook #'flyspell-popup-auto-correct-mode))
 
 (use-package origami
   :init (global-origami-mode)
@@ -453,8 +454,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :config
   (add-hook 'clojure-mode-hook 'clojure-config/hook))
 
-(use-package coffee-mode
-  :defer t)
+(use-package coffee-mode)
 
 (use-package dockerfile-mode)
 
@@ -484,7 +484,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (add-hook 'go-mode-hook 'go-config/hook))
 
 (use-package haskell-mode
-  :defer t
   :config
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
@@ -497,11 +496,12 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :after (add-node-modules-path)
   :mode "\\.js$"
   :interpreter "node"
+  :custom
+  (js2-strict-trailing-comma-warning t)
+  (js2-strict-inconsistent-return-warning nil)
+  (js2-mode-show-strict-warnings nil)
+  (js2-basic-offset 2)
   :config
-  (setq js2-strict-trailing-comma-warning t)
-  (setq js2-strict-inconsistent-return-warning nil)
-  (setq js2-mode-show-strict-warnings nil)
-  (setq js2-basic-offset 2)
   (unbind-key "C-c C-o" js2-mode-map)
   (unbind-key "C-c C-e" js2-mode-map)
   (unbind-key "C-c C-s" js2-mode-map)
@@ -541,47 +541,36 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (add-hook 'ruby-mode-hook 'ruby-refactor-mode-launch))
 
 (use-package rust-mode
-  :config
-  (setq rust-format-on-save t))
+  :custom
+  (rust-format-on-save t))
 
 (use-package sass-mode)
-
 (use-package scss-mode)
-
-(use-package sh-script
-  :mode "\\.sh$"
-  :mode "\\.zsh$"
-  :mode "zshrc"
-  :config
-  (setq sh-basic-offset 2))
 
 (require 'tslint-fix)
 
 (use-package typescript-mode
-  :config
-  (setq typescript-indent-level 2))
+  :custom
+  (typescript-indent-level 2))
 
 (require 'vodka-mode)
 (require 'hjson-mode)
 
-(defun web-config/hook ()
-  (setq web-mode-style-padding 2)
-  (setq web-mode-script-padding 2)
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-enable-css-colorization t)
-  (setq web-mode-enable-auto-closing t)
-  (setq web-mode-enable-auto-pairing t))
-
 (use-package web-mode
-  :defer t
   :mode "\\.erb$"
   :mode "\\.mustache$"
   :mode "\\.html?$"
   :mode "\\.gotmpl$"
   :mode "\\.handlebars$"
-  :config (add-hook 'web-mode-hook 'web-config/hook))
+  :custom
+  (web-mode-style-padding 2)
+  (web-mode-script-padding 2)
+  (web-mode-markup-indent-offset 2)
+  (web-mode-css-indent-offset 2)
+  (web-mode-code-indent-offset 2)
+  (web-mode-enable-css-colorization t)
+  (web-mode-enable-auto-closing t)
+  (web-mode-enable-auto-pairing t))
 
 (use-package yaml-mode)
 
