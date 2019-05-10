@@ -563,6 +563,9 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
+  :bind (("M-." . markdown-reference-goto-definition)
+         ("M-," . markdown-reference-goto-link)
+         ("C-c ." . markdown-reference-goto-link))
   :init (setq markdown-command "multimarkdown"))
 
 (use-package inf-ruby
