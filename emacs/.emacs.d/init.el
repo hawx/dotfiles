@@ -535,8 +535,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (use-package json-mode)
 
 (use-package js2-mode
-  :after (add-node-modules-path)
-  :mode "\\.js$"
+  :mode "\\.js\\'"
   :interpreter "node"
   :custom
   (js2-strict-trailing-comma-warning t)
@@ -551,6 +550,9 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (unbind-key "C-c C-n" js2-mode-map)
   (unbind-key "C-c C-m" js2-mode-map)
   (unbind-key "C-c C-f" js2-mode-map))
+
+(use-package rjsx-mode
+  :mode "\\.jsx\\'")
 
 (use-package eslint-fix
   :after (js2-mode)
@@ -574,9 +576,9 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package ruby-mode
   :bind (:map ruby-mode-map ("RET" . reindent-then-newline-and-indent))
-  :mode "\\.rake$"
-  :mode "\\.gemspec$"
-  :mode "\\.ru$"
+  :mode "\\.rake\\'"
+  :mode "\\.gemspec\\'"
+  :mode "\\.ru\\'"
   :mode "Rakefile"
   :mode "Gemfile"
   :mode "Capfile"
@@ -602,11 +604,11 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (require 'hjson-mode)
 
 (use-package web-mode
-  :mode "\\.erb$"
-  :mode "\\.mustache$"
-  :mode "\\.html?$"
-  :mode "\\.gotmpl$"
-  :mode "\\.handlebars$"
+  :mode "\\.erb\\'"
+  :mode "\\.mustache\\'"
+  :mode "\\.html?\\'"
+  :mode "\\.gotmpl\\'"
+  :mode "\\.handlebars\\'"
   :custom
   (web-mode-style-padding 2)
   (web-mode-script-padding 2)
@@ -616,6 +618,24 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (web-mode-enable-css-colorization t)
   (web-mode-enable-auto-closing t)
   (web-mode-enable-auto-pairing t))
+
+(defun nxml-where ()
+  "Display the hierarchy of XML elements the point is on as a path."
+  (interactive)
+  (let ((path nil))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                    (condition-case nil
+                        (progn
+                          (nxml-backward-up-element) ; always returns nil
+                          t)
+                      (error nil)))
+          (setq path (cons (xmltok-start-tag-local-name) path)))
+        (if (called-interactively-p t)
+            (message "/%s" (mapconcat 'identity path "/"))
+          (format "/%s" (mapconcat 'identity path "/")))))))
 
 (use-package yaml-mode)
 
