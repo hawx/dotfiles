@@ -10,6 +10,8 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+(use-package use-package-ensure-system-package)
+
 (defvar dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
 (defvar dotfiles-lib-dir (concat dotfiles-dir "lib/"))
 (defvar dotfiles-etc-dir (concat dotfiles-dir "etc/"))
@@ -206,6 +208,7 @@
   (flx-ido-mode 1))
 
 (use-package csv-mode
+  :mode "\\.[Cc][Ss][Vv]\\'"
   :custom
   (csv-header-lines 1))
 
@@ -275,6 +278,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                                      (unpackaged/smerge-hydra/body)))))
 
 (use-package deadgrep
+  :ensure-system-package (rg . ripgrep)
   :bind ("C-c s" . deadgrep))
 
 (use-package projectile
@@ -353,6 +357,7 @@ PROJECTILE: %(projectile-project-root)
 
 (use-package flycheck
   :init (global-flycheck-mode)
+  :ensure-system-package (jsonlint . "npm i -g jsonlint")
   :config
   ;; disable some checkers
   (setq-default flycheck-disabled-checkers
@@ -493,16 +498,20 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
                                                            (match-end 1) "∈")))))))
 
 (use-package clojure-mode
+  :mode (("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
+         ("\\.cljc\\'" . clojurec-mode)
+         ("\\.cljs\\'" . clojurescript-mode)
+         ("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode))
   :config
   (add-hook 'clojure-mode-hook 'clojure-config/hook))
 
-(use-package coffee-mode)
-
-(use-package dockerfile-mode)
+(use-package dockerfile-mode
+  :mode "Dockerfile\\(?:\\..*\\)?\\'")
 
 (use-package nginx-mode)
 
 (use-package elm-mode
+  :mode "\\.elm\\'"
   :after (company)
   :init
   (setq elm-format-on-save t)
@@ -513,7 +522,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (add-hook 'before-save-hook 'gofmt-before-save)
   (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs")))
 
-(use-package golint)
+(use-package golint
+  :after (go-mode))
 
 (use-package go-mode
   :mode "\\(\\.go\\|go.mod\\|go.sum\\)\\'"
@@ -526,17 +536,31 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (add-hook 'go-mode-hook 'go-config/hook))
 
 (use-package haskell-mode
+  :mode (("\\.hcr\\'" . ghc-core-mode)
+         ("\\.dump-simpl\\'" . ghc-core-mode)
+         ("\\.ghci\\'" . ghci-script-mode)
+         ("\\.chs\\'" . haskell-c2hs-mode)
+         ("\\.cabal\\'" . haskell-cabal-mode)
+         ("\\.[gh]s\\'" . haskell-mode)
+         ("\\.hsig\\'" . haskell-mode)
+         ("\\.l[gh]s\\'" . literate-haskell-mode)
+         ("\\.hsc\\'" . haskell-mode)
+         ("runghc" . haskell-mode)
+         ("runhaskell" . haskell-mode))
   :config
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
   (add-to-list 'completion-ignored-extensions ".hi")
   (add-to-list 'completion-ignored-extensions ".o"))
 
-(use-package json-mode)
+(use-package json-mode
+  :mode "\\.json\\'"
+  :mode "\\.jsonld\\'")
 
 (use-package js2-mode
   :mode "\\.js\\'"
   :interpreter "node"
+  :ensure-system-package (javascript-typescript-langserver . "npm i -g javascript-typescript-langserver")
   :custom
   (js2-strict-trailing-comma-warning t)
   (js2-strict-inconsistent-return-warning nil)
@@ -571,6 +595,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :init (setq markdown-command "multimarkdown"))
 
 (use-package inf-ruby
+  :after (ruby-mode)
   :config
   (add-hook 'ruby-mode-hook #'inf-ruby-minor-mode))
 
@@ -588,15 +613,22 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (add-hook 'ruby-mode-hook 'ruby-refactor-mode-launch))
 
 (use-package rust-mode
+  :mode "\\.rs\\'"
   :custom
   (rust-format-on-save t))
 
-(use-package sass-mode)
-(use-package scss-mode)
+(use-package sass-mode
+  :mode "\\.sass\\'")
+
+(use-package scss-mode
+  :mode "\\.scss\\'")
 
 (require 'tslint-fix)
 
 (use-package typescript-mode
+  :mode "\\.ts\\'"
+  :ensure-system-package ((typescript . "npm i -g typescript")
+                          (typescript-language-server . "npm i -g typescript-language-server"))
   :custom
   (typescript-indent-level 2))
 
@@ -609,6 +641,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.html?\\'"
   :mode "\\.gotmpl\\'"
   :mode "\\.handlebars\\'"
+  :ensure-system-package ((css-languageserver . "npm i -g vscode-css-languageserver-bin")
+                          (html-languageserver . "npm i -g vscode-html-languageserver-bin"))
   :custom
   (web-mode-style-padding 2)
   (web-mode-script-padding 2)
@@ -637,7 +671,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
             (message "/%s" (mapconcat 'identity path "/"))
           (format "/%s" (mapconcat 'identity path "/")))))))
 
-(use-package yaml-mode)
+(use-package yaml-mode
+  :mode "\\.\\(e?ya?\\|ra\\)ml\\'")
 
 (defalias 'list-buffers 'ibuffer)
 
