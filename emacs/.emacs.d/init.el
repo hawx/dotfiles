@@ -627,7 +627,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package typescript-mode
   :mode "\\.ts\\'"
-  :ensure-system-package ((typescript . "npm i -g typescript")
+  :ensure-system-package ((tsc . "npm i -g typescript")
                           (typescript-language-server . "npm i -g typescript-language-server"))
   :custom
   (typescript-indent-level 2))
