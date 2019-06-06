@@ -158,7 +158,8 @@
 (use-package lsp-mode
   :commands lsp
   :hook (prog-mode . lsp)
-  :bind (("C-c ." . lsp-find-references)
+  :bind (:map lsp-mode-map
+         ("C-c ." . lsp-find-references)
          ("C-c C-r" . lsp-rename))
   :custom
   (lsp-prefer-flymake nil)
@@ -589,7 +590,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :bind (("M-." . markdown-reference-goto-definition)
+  :bind (:map markdown-mode-map
+         ("M-." . markdown-reference-goto-definition)
          ("M-," . markdown-reference-goto-link)
          ("C-c ." . markdown-reference-goto-link))
   :init (setq markdown-command "multimarkdown"))
