@@ -568,6 +568,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (js2-mode-show-strict-warnings nil)
   (js2-basic-offset 2)
   :config
+  (unbind-key "M-." js2-mode-map)
   (unbind-key "C-c C-o" js2-mode-map)
   (unbind-key "C-c C-e" js2-mode-map)
   (unbind-key "C-c C-s" js2-mode-map)
