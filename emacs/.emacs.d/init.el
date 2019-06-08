@@ -644,6 +644,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.html?\\'"
   :mode "\\.gotmpl\\'"
   :mode "\\.handlebars\\'"
+  :mode "\\.vue\\'"
   :ensure-system-package ((css-languageserver . "npm i -g vscode-css-languageserver-bin")
                           (html-languageserver . "npm i -g vscode-html-languageserver-bin"))
   :custom
