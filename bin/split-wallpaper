@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+
+require 'mini_magick'
+require 'optionparser'
+
+Dimension = Struct.new(:width, :height)
+
+class Screen
+  attr_reader :pixel, :physical
+
+  def initialize(diag, width, height)
+    @pixel = Dimension.new(width, height)
+
+    factor = diag / Math.sqrt(width ** 2 + height ** 2)
+
+    @physical = Dimension.new(width * factor, height * factor)
+  end
+end
+
+class Image
+  def initialize(path, width, height)
+    @path = path
+    @width = width
+    @height = height
+  end
+
+  def split(left, right, nudge, left_out, right_out)
+    total_width = left.physical.width + right.physical.width
+    px_per_unit = Rational(@width, total_width)
+
+    left_crop_width = (left.physical.width * px_per_unit).to_i
+    left_crop_height = (left.physical.height * px_per_unit).to_i
+    left_nudge = (left.physical.height < right.physical.height ? nudge * px_per_unit : 0).to_i
+
+    puts "Cropping left to #{left_crop_width} x #{left_crop_height} + 0 x #{left_nudge}"
+    image = MiniMagick::Image.open(@path)
+    image.crop "#{left_crop_width}x#{left_crop_height}+0+#{left_nudge}"
+    image.resize "#{left.pixel.width}x#{left.pixel.height}\!"
+    image.write left_out
+
+    right_crop_width = (right.physical.width * px_per_unit).to_i
+    right_crop_height = (right.physical.height * px_per_unit).to_i
+    right_nudge = (right.physical.height < left.physical.height ? nudge * px_per_unit : 0).to_i
+
+    puts "Cropping right to #{right_crop_width} x #{right_crop_height} + #{left_crop_width} x #{right_nudge}"
+    image = MiniMagick::Image.open(@path)
+    image.crop "#{right_crop_width}x#{right_crop_height}+#{left_crop_width}+#{right_nudge}"
+    image.resize "#{right.pixel.width}x#{right.pixel.height}\!"
+    image.write right_out
+  end
+end
+
+args = {
+  left: {},
+  right: {},
+  nudge: 0,
+}
+
+opt_parser = OptionParser.new do |opts|
+  opts.banner = "Usage: split-image [options]"
+
+  opts.on("--in=PATH", "Path to image to split") do |n|
+    args[:in] = n
+  end
+
+  opts.on("--nudge=HEIGHT", "Distance to nudge smallest image down") do |n|
+    args[:nudge] = n.to_i
+  end
+
+  [:left, :right].each do |screen|
+    opts.on("--out-#{screen}=PATH", "Path to write #{screen} image") do |n|
+      args[screen][:out] = n
+    end
+
+    opts.on("--#{screen}-width=PIXELS", "Width of #{screen} screen") do |n|
+      args[screen][:width] = n.to_i
+    end
+
+    opts.on("--#{screen}-height=PIXELS", "Height of #{screen} screen") do |n|
+      args[screen][:height] = n.to_i
+    end
+
+    opts.on("--#{screen}-diagonal=DIAGONAL", "Diagonal size of #{screen} screen") do |n|
+      args[screen][:diagonal] = n.to_i
+    end
+  end
+end
+
+opt_parser.parse!
+
+left = Screen.new(args[:left][:diagonal], args[:left][:width], args[:left][:height])
+right = Screen.new(args[:right][:diagonal], args[:right][:width], args[:right][:height])
+
+image = MiniMagick::Image.open(args[:in])
+
+image = Image.new(args[:in], image[:width], image[:height])
+image.split(left, right, args[:nudge], args[:left][:out], args[:right][:out])
