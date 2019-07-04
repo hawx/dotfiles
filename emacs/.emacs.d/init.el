@@ -43,6 +43,12 @@
   (interactive)
   (ansi-color-apply-on-region (point-min) (point-max)))
 
+(defun colorize-compilation-buffer ()
+  (read-only-mode -1)
+  (ansi-color-apply-on-region compilation-filter-start (point))
+  (read-only-mode +1))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
 (setq
  ;; Put autosave files (ie #foo#) and backup files (ie foo~) in the tmp dir
  ;; store all backup and autosave files in the tmp dir
