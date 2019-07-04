@@ -4,16 +4,20 @@ require 'mini_magick'
 require 'optionparser'
 
 Dimension = Struct.new(:width, :height)
+Rect = Struct.new(:x, :y, :width, :height)
+Rects = Struct.new(:left, :right)
 
 class Screen
-  attr_reader :pixel, :physical
+  attr_reader :pixel, :physical, :scale
 
   def initialize(diag, width, height)
     @pixel = Dimension.new(width, height)
 
-    factor = diag / Math.sqrt(width ** 2 + height ** 2)
+    aspectRatioDiagonal = Math.sqrt(width ** 2 + height ** 2)
+    factor = Rational(diag, aspectRatioDiagonal)
 
     @physical = Dimension.new(width * factor, height * factor)
+    @scale = Rational(@pixel.height, @physical.height)
   end
 end
 
@@ -24,29 +28,79 @@ class Image
     @height = height
   end
 
-  def split(left, right, nudge, left_out, right_out)
-    total_width = left.physical.width + right.physical.width
-    px_per_unit = Rational(@width, total_width)
+  def split(left, right, nudge, start_left, gap, left_out, right_out)
+    crop = rects(left, right, nudge, start_left, gap)
 
-    left_crop_width = (left.physical.width * px_per_unit).to_i
-    left_crop_height = (left.physical.height * px_per_unit).to_i
-    left_nudge = (left.physical.height < right.physical.height ? nudge * px_per_unit : 0).to_i
+    puts "Cropping left to #{crop.left.width} x #{crop.left.height} + #{crop.left.x} x #{crop.left.y}"
 
-    puts "Cropping left to #{left_crop_width} x #{left_crop_height} + 0 x #{left_nudge}"
     image = MiniMagick::Image.open(@path)
-    image.crop "#{left_crop_width}x#{left_crop_height}+0+#{left_nudge}"
+    image.crop "#{crop.left.width}x#{crop.left.height}+#{crop.left.x}+#{crop.left.y}"
     image.resize "#{left.pixel.width}x#{left.pixel.height}\!"
     image.write left_out
+
+    puts "Cropping right to #{crop.right.width} x #{crop.right.height} + #{crop.right.x} x #{crop.right.y}"
+    image = MiniMagick::Image.open(@path)
+    image.crop "#{crop.right.width}x#{crop.right.height}+#{crop.right.x}+#{crop.right.y}"
+    image.resize "#{right.pixel.width}x#{right.pixel.height}\!"
+    image.write right_out
+  end
+
+  def explain(left, right, nudge, start_left, gap, out)
+    crop = rects(left, right, nudge, start_left, gap)
+
+    puts "Would crop left to #{crop.left.width} x #{crop.left.height} + #{crop.left.x} x #{crop.left.y}"
+    puts "Would crop right to #{crop.right.width} x #{crop.right.height} + #{crop.right.x} x #{crop.right.y}"
+
+    image = MiniMagick::Image.open(@path)
+
+    image.combine_options do |c|
+      c.fill "none"
+      c.stroke "red"
+      c.strokewidth "5"
+      c.draw "rectangle #{crop.left.x},#{crop.left.y} #{crop.left.x+crop.left.width},#{crop.left.y+crop.left.height}"
+    end
+
+    image.combine_options do |c|
+      c.fill "none"
+      c.stroke "green"
+      c.strokewidth "5"
+      c.draw "rectangle #{crop.right.x},#{crop.right.y} #{crop.right.x+crop.right.width},#{crop.right.y+crop.right.height}"
+    end
+
+    image.write out
+  end
+
+  def rects(left, right, nudge, start_left, gap)
+    total_width = left.physical.width + right.physical.width
+    left_mag = Rational(left.scale, right.scale)
+
+    px_per_unit = Rational(@width - start_left - gap, total_width)
+
+    left_crop_height = (left.physical.height * px_per_unit * left_mag).to_i
+    right_crop_height = (right.physical.height * px_per_unit).to_i
+
+    if left_crop_height > left.pixel.height
+      px_per_unit = Rational(@height, left.physical.height)
+    end
+
+    if right_crop_height > right.pixel.height
+      px_per_unit = Rational(@height, right.physical.height)
+    end
+
+    left_crop_width = (left.physical.width * px_per_unit * left_mag).to_i
+    left_crop_height = (left.physical.height * px_per_unit * left_mag).to_i
+    left_nudge = (left.physical.height < right.physical.height ? nudge * px_per_unit : 0).to_i
+    left_start = (start_left * px_per_unit).to_i
 
     right_crop_width = (right.physical.width * px_per_unit).to_i
     right_crop_height = (right.physical.height * px_per_unit).to_i
     right_nudge = (right.physical.height < left.physical.height ? nudge * px_per_unit : 0).to_i
+    right_start = left_crop_width + left_start + (gap * px_per_unit).to_i
 
-    puts "Cropping right to #{right_crop_width} x #{right_crop_height} + #{left_crop_width} x #{right_nudge}"
-    image = MiniMagick::Image.open(@path)
-    image.crop "#{right_crop_width}x#{right_crop_height}+#{left_crop_width}+#{right_nudge}"
-    image.resize "#{right.pixel.width}x#{right.pixel.height}\!"
-    image.write right_out
+    Rects.new(
+      Rect.new(left_start, left_nudge, left_crop_width, left_crop_height),
+      Rect.new(right_start, right_nudge, right_crop_width, right_crop_height)
+    )
   end
 end
 
@@ -54,6 +108,8 @@ args = {
   left: {},
   right: {},
   nudge: 0,
+  start_left: 0,
+  gap: 0,
 }
 
 opt_parser = OptionParser.new do |opts|
@@ -64,7 +120,19 @@ opt_parser = OptionParser.new do |opts|
   end
 
   opts.on("--nudge=HEIGHT", "Distance to nudge smallest image down") do |n|
-    args[:nudge] = n.to_i
+    args[:nudge] = n.to_f
+  end
+
+  opts.on("--start-left=WIDTH", "Distance to start cropping from the left") do |n|
+    args[:start_left] = n.to_f
+  end
+
+  opts.on("--gap=WIDTH", "Distance between left and right screens") do |n|
+    args[:gap] = n.to_f
+  end
+
+  opts.on("--explain=OUT", "Draw rectangles explaining what will be cut") do |n|
+    args[:explain] = n
   end
 
   [:left, :right].each do |screen|
@@ -94,4 +162,8 @@ right = Screen.new(args[:right][:diagonal], args[:right][:width], args[:right][:
 image = MiniMagick::Image.open(args[:in])
 
 image = Image.new(args[:in], image[:width], image[:height])
-image.split(left, right, args[:nudge], args[:left][:out], args[:right][:out])
+if args[:explain]
+  image.explain(left, right, args[:nudge], args[:start_left], args[:gap], args[:explain])
+else
+  image.split(left, right, args[:nudge], args[:start_left], args[:gap], args[:left][:out], args[:right][:out])
+end
