@@ -240,6 +240,8 @@
 
 (use-package magit
   :config (setq magit-process-finish-apply-ansi-colors t)
+  :diminish magit-auto-revert-mode
+  :diminish auto-revert-mode
   :bind ("C-x g" . magit-status))
 
 ;; https://github.com/alphapapa/unpackaged.el#hydra
