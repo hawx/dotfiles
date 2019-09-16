@@ -117,6 +117,13 @@
   :config
   (load-theme 'twilight t))
 
+(use-package beacon
+  :diminish
+  :config (beacon-mode 1)
+  :custom
+  (beacon-color 0.7)
+  (beacon-size 15))
+
 (ansi-color-for-comint-mode-on)
 
 ; get rid of clutter
