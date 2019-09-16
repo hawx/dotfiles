@@ -228,7 +228,9 @@
 
 (use-package paredit
   :diminish
-  :hook ((emacs-lisp-mode lisp-mode scheme-mode ielm-mode clojure-mode) . paredit-mode))
+  :hook ((emacs-lisp-mode lisp-mode scheme-mode ielm-mode clojure-mode) . paredit-mode)
+  :bind (("C-f" . paredit-forward)
+         ("C-b" . paredit-backward)))
 
 (use-package smex
   :init
@@ -714,6 +716,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (global-set-key (kbd "M-DEL") 'backward-kill-word)
 (global-set-key (kbd "<f1>") 'create-scratch-buffer)
 (global-set-key (kbd "C-c q") 'kill-this-buffer)
+
 (global-unset-key (kbd "C-x o"))
 
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
