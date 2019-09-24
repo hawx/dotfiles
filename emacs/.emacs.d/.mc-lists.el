@@ -12,6 +12,7 @@
         indent-for-tab-command
         markdown-cycle
         paredit-forward
+        pbpaste
         sh-assignment
         shell-pop
         smex

@@ -594,6 +594,11 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (unbind-key "C-c C-m" js2-mode-map)
   (unbind-key "C-c C-f" js2-mode-map))
 
+(use-package prettier-js
+  :config
+  (add-hook 'web-mode-hook #'add-node-modules-path)
+  (add-hook 'web-mode-hook #'prettier-js-mode))
+
 (use-package rjsx-mode
   :mode "\\.jsx\\'")
 
