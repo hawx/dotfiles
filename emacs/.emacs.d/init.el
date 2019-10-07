@@ -496,9 +496,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (setq-default c-basic-offset 2)
 
 (use-package add-node-modules-path
-  :config
-  (add-node-modules-path)
-  :hook (js2-mode typescript-mode))
+  :hook (js2-mode typescript-mode web-mode))
 
 (defun clojure-config/hook ()
   (rainbow-delimiters-mode)
@@ -589,9 +587,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (unbind-key "C-c C-f" js2-mode-map))
 
 (use-package prettier-js
-  :config
-  (add-hook 'web-mode-hook #'add-node-modules-path)
-  (add-hook 'web-mode-hook #'prettier-js-mode))
+  :diminish
+  :hook ((js2-mode typescript-mode web-mode) . prettier-js-mode))
 
 (use-package rjsx-mode
   :mode "\\.jsx\\'")
