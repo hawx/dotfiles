@@ -159,18 +159,10 @@
   :diminish
   :init (global-subword-mode))
 
-(use-package company
-  :diminish
-  :init (global-company-mode)
-  :custom
-  (company-tooltip-limit 20)
-  (company-idle-delay .3)
-  (company-echo-delay 0)
-  (company-begin-commands '(self-insert-command)))
-
 (use-package lsp-mode
-  :commands lsp
-  :hook (prog-mode . lsp)
+  :commands (lsp lsp-deferred)
+  :hook ((js2-mode . lsp)
+         (typescript-mode . lsp))
   :bind (:map lsp-mode-map
          ("C-c ." . lsp-find-references)
          ("C-c C-r" . lsp-rename))
@@ -184,6 +176,15 @@
   :custom
   (lsp-ui-sideline-enable nil)
   (lsp-ui-doc-enable nil))
+
+(use-package company
+  :diminish
+  :init (global-company-mode)
+  :custom
+  (company-tooltip-limit 20)
+  (company-idle-delay .3)
+  (company-echo-delay 0)
+  (company-begin-commands '(self-insert-command)))
 
 (use-package company-lsp
   :commands company-lsp)
@@ -536,22 +537,15 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :config
   (add-to-list 'company-backends 'company-elm))
 
-(defun go-config/hook ()
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs")))
-
-(use-package golint
-  :after (go-mode))
-
 (use-package go-mode
-  :mode "\\(\\.go\\|go.mod\\|go.sum\\)\\'"
+  :mode "\\(\\.go\\|go\\.mod\\|go\\.sum\\)\\'"
+  :ensure-system-package (gopls . "cd /tmp && GO111MODULE=on go get golang.org/x/tools/gopls@latest")
+  :hook ((go-mode . lsp-deferred)
+         (before-save . lsp-format-buffer)
+         (before-save . lsp-organize-imports))
   :bind (:map go-mode-map
               ("C-x t f" . go-test-current-file)
-              ("C-x t t" . go-test-current-test))
-  :init
-  (setq gofmt-command "goimports")
-  :config
-  (add-hook 'go-mode-hook 'go-config/hook))
+              ("C-x t t" . go-test-current-test)))
 
 (use-package haskell-mode
   :mode (("\\.hcr\\'" . ghc-core-mode)
@@ -666,6 +660,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.html?\\'"
   :mode "\\.gotmpl\\'"
   :mode "\\.handlebars\\'"
+  :mode "\\.php\\'"
   :mode "\\.vue\\'"
   :ensure-system-package ((css-languageserver . "npm i -g vscode-css-languageserver-bin")
                           (html-languageserver . "npm i -g vscode-html-languageserver-bin"))
