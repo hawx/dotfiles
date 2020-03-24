@@ -162,7 +162,8 @@
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
   :hook ((js2-mode . lsp)
-         (typescript-mode . lsp))
+         (typescript-mode . lsp)
+         (php-mode . lsp))
   :bind (:map lsp-mode-map
          ("C-c ." . lsp-find-references)
          ("C-c C-r" . lsp-rename))
@@ -628,6 +629,9 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (add-to-list 'completion-ignored-extensions ".rbc")
   (add-hook 'ruby-mode-hook 'ruby-refactor-mode-launch))
 
+(use-package php-mode
+  :ensure-system-package (intelephense . "npm i intelephense -g"))
+
 (use-package rust-mode
   :mode "\\.rs\\'"
   :custom
@@ -657,7 +661,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.html?\\'"
   :mode "\\.gotmpl\\'"
   :mode "\\.handlebars\\'"
-  :mode "\\.php\\'"
   :mode "\\.vue\\'"
   :ensure-system-package ((css-languageserver . "npm i -g vscode-css-languageserver-bin")
                           (html-languageserver . "npm i -g vscode-html-languageserver-bin"))
