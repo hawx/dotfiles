@@ -106,7 +106,7 @@ function generate_playlist() {
 
   logger "Populating $playlist"
   for i in $MUSIC_DIR/**/*(.m-$DAYS); do
-    if [[ "$i" =~ "\.mp3" ]]; then
+    if [[ "$i" =~ "\.(mp3|flac)" ]]; then
       echo "$i"
     fi
   done >> $playlist && logger "Successfully filled $playlist"
