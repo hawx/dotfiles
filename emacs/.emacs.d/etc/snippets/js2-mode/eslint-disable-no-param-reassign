@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: eslint-disable-no-param-reassign
+# key: edp
+# --
+/* eslint-disable no-param-reassign */

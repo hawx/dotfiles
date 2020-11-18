@@ -3,11 +3,18 @@ emacs/.emacs.d/tmp/
 emacs/.emacs.d/elpa/
 emacs/.emacs.d/url/
 emacs/.emacs.d/eshell/
+emacs/.emacs.d/projectile-bookmarks.eld
+emacs/.emacs.d/.lsp-session-v1
+emacs/.emacs.d/ido.last
+emacs/.emacs.d/lsp-cache/
+emacs/.emacs.d/places
+emacs/.emacs.d/smex-items
+emacs/.emacs.d/transient/
 *.elc
 zsh/.zsh/cache/
 mpd/.config/mpd/sticker.sql
 mpd/.config/mpd/tag_cache
-emacs/.emacs.d/projectile-bookmarks.eld
+
 
 ## FILES WITH SECRETS ##
 
