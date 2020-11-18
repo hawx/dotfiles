@@ -22,7 +22,13 @@
      mode-line-misc-info " " mode-line-end-spaces)))
  '(package-selected-packages
    (quote
-    (php-mode prettier-js beacon use-package-ensure-system-package csharp-mode rjsx-mode flycheck go-mode typescript-mode expand-region dockerfile-mode company-lsp lsp-ui lsp-mode diminish nginx-mode twilight-theme edit-indirect deadgrep company-quickhelp flyspell-popup flyspell-correct flx-ido csv-mode shell-pop add-node-modules-path eslint-fix origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint elm-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))))
+    (counsel-projectile counsel ivy terraform-mode feature-mode php-mode prettier-js beacon use-package-ensure-system-package csharp-mode rjsx-mode flycheck go-mode typescript-mode expand-region dockerfile-mode company-lsp lsp-ui lsp-mode diminish nginx-mode twilight-theme edit-indirect deadgrep company-quickhelp flyspell-popup flyspell-correct flx-ido csv-mode shell-pop add-node-modules-path origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint elm-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package)))
+ '(safe-local-variable-values
+   (quote
+    ((backup-by-copying t)
+     (lsp-enable-file-watchers nil)
+     (my/inhibit-eslint-fix quote t)
+     (lsp-before-save-edits)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -33,4 +39,7 @@
  '(company-scrollbar-fg ((t (:background "#0ccc0ccc0ccc"))))
  '(company-tooltip ((t (:inherit default :background "#0ccc0ccc0ccc"))))
  '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
- '(company-tooltip-selection ((t (:inherit font-lock-function-name-face)))))
+ '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+ '(ivy-current-match ((t (:foreground "#8F9D6A"))))
+ '(ivy-minibuffer-match-face-1 ((t (:background "#222222"))))
+ '(ivy-subdir ((t (:foreground "#CF6A4C")))))

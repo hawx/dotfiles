@@ -1,6 +1,6 @@
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
@@ -170,6 +170,7 @@
   :custom
   (lsp-prefer-flymake nil)
   (lsp-auto-guess-root t)
+  (lsp-before-save-edits nil)
   (lsp-eldoc-render-all t))
 
 (use-package lsp-ui
@@ -301,10 +302,20 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :ensure-system-package (rg . ripgrep)
   :bind ("C-c s" . deadgrep))
 
+(use-package ivy
+  :custom
+  (ivy-use-virtual-buffers t)
+  (ivy-re-builders-alist '((t . ivy--regex-plus)))
+  :custom-face
+  (ivy-current-match ((t (:foreground "#8F9D6A"))))
+  (ivy-subdir ((t (:foreground "#CF6A4C"))))
+  (ivy-minibuffer-match-face-1 ((t (:background "#222222")))))
+
 (use-package projectile
   :custom
   (projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))
   (projectile-indexing-method 'alien)
+  (projectile-completion-system 'ivy)
   :defer 1
   :bind (("C-c p" . hydra-projectile/body)
          ("C-c f" . projectile-find-file)
@@ -589,17 +600,10 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package prettier-js
   :diminish
-  :hook ((js2-mode typescript-mode web-mode) . prettier-js-mode))
+  :hook ((js2-mode typescript-mode) . prettier-js-mode))
 
 (use-package rjsx-mode
   :mode "\\.jsx\\'")
-
-(use-package eslint-fix
-  :after (js2-mode)
-  :config
-  (add-hook 'js2-mode-hook
-            (lambda ()
-              (add-hook 'after-save-hook 'eslint-fix nil t))))
 
 (use-package markdown-mode
   :mode (("README\\.md\\'" . gfm-mode)
@@ -662,6 +666,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.gotmpl\\'"
   :mode "\\.handlebars\\'"
   :mode "\\.vue\\'"
+  :mode "\\.twig\\'"
   :ensure-system-package ((css-languageserver . "npm i -g vscode-css-languageserver-bin")
                           (html-languageserver . "npm i -g vscode-html-languageserver-bin"))
   :custom
@@ -673,6 +678,9 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (web-mode-enable-css-colorization t)
   (web-mode-enable-auto-closing t)
   (web-mode-enable-auto-pairing t))
+
+(setq web-mode-engines-alist
+      '(("django" . "\\.html\\'")))
 
 (defun nxml-where ()
   "Display the hierarchy of XML elements the point is on as a path."
@@ -716,7 +724,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (global-set-key (kbd "M-DEL") 'backward-kill-word)
 (global-set-key (kbd "<f1>") 'create-scratch-buffer)
 (global-set-key (kbd "C-c q") 'kill-this-buffer)
-
+(global-set-key (kbd "C-c C-s") 'swiper-isearch)
 (global-unset-key (kbd "C-x o"))
 
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)

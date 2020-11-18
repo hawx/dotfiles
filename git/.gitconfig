@@ -2,6 +2,9 @@
 	name = Joshua Hawxwell
 	email = m@hawx.me
 
+[init]
+  defaultBranch = master
+
 [core]
 	excludesfile = ~/.gitignore_global
   pager = less -FRSX

@@ -4,6 +4,10 @@
 (setq mc/cmds-to-run-for-all
       '(
         backward-sexp
+        c-electric-delete-forward
+        c-electric-paren
+        c-electric-semi&comma
+        c-indent-line-or-region
         cua-copy-region
         cua-cut-region
         cua-paste
@@ -11,6 +15,7 @@
         forward-sexp
         indent-for-tab-command
         markdown-cycle
+        paredit-backward
         paredit-forward
         pbpaste
         sh-assignment
@@ -28,6 +33,7 @@
         beginning-of-buffer
         compose-mail
         kill-region
+        lsp-find-references
         markdown-outdent-or-delete
         multiple-cursors-hydra/body
         multiple-cursors-hydra/mc/edit-lines-and-exit
@@ -38,5 +44,6 @@
         multiple-cursors-hydra/mc/skip-to-previous-like-this
         multiple-cursors-hydra/mc/unmark-next-like-this
         multiple-cursors-hydra/nil
+        xref-find-references
         xterm-paste
         ))

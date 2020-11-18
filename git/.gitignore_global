@@ -10,3 +10,7 @@
 *.gem
 .yardoc
 .sass-cache
+
+.dir-locals.el
+.projectile
+.log
