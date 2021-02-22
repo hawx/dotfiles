@@ -587,7 +587,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (js2-strict-trailing-comma-warning t)
   (js2-strict-inconsistent-return-warning nil)
   (js2-mode-show-strict-warnings nil)
-  (js2-basic-offset 2)
   :config
   (unbind-key "M-." js2-mode-map)
   (unbind-key "C-c C-o" js2-mode-map)
@@ -597,10 +596,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (unbind-key "C-c C-n" js2-mode-map)
   (unbind-key "C-c C-m" js2-mode-map)
   (unbind-key "C-c C-f" js2-mode-map))
-
-(use-package prettier-js
-  :diminish
-  :hook ((js2-mode typescript-mode) . prettier-js-mode))
 
 (use-package rjsx-mode
   :mode "\\.jsx\\'")
