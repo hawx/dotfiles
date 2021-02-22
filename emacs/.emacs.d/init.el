@@ -102,7 +102,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; remove all trailing whitespace and trailing blank lines before saving the file
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'whitespace-cleanup)
 
 ;; stop ffap from using strings beginning with /
 (defadvice ffap-file-at-point (after ffap-file-at-point-after-advice ())
@@ -116,13 +116,6 @@
 (use-package twilight-theme
   :config
   (load-theme 'twilight t))
-
-(use-package beacon
-  :diminish
-  :config (beacon-mode 1)
-  :custom
-  (beacon-color 0.7)
-  (beacon-size 15))
 
 (ansi-color-for-comint-mode-on)
 
