@@ -19,8 +19,8 @@ autoload -U promptinit; promptinit
 prompt pure
 
 if [ -s "$HOME/.asdf/asdf.sh" ]; then
-  source ~/.asdf/asdf.sh
-  source ~/.asdf/completions/asdf.bash
+    source ~/.asdf/asdf.sh
+    # source ~/.asdf/completions/asdf.bash
 fi
 
 which fortune &> /dev/null

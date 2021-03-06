@@ -8,4 +8,4 @@ set scroll=relative
 
 set topbar2.center=%ifcursong% %title% %else% No current song %endif%
 
-color fields.genre grey
+color fields.track white
