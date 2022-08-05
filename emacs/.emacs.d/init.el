@@ -308,6 +308,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (ivy-subdir ((t (:foreground "#CF6A4C"))))
   (ivy-minibuffer-match-face-1 ((t (:background "#222222")))))
 
+(use-package lsp-ivy
+  :bind ("C-c M-f" . lsp-ivy-workspace-symbol))
+
 (use-package projectile
   :custom
   (projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))

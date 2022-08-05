@@ -17,7 +17,7 @@
      (vc-mode vc-mode)
      mode-line-misc-info " " mode-line-end-spaces))
  '(package-selected-packages
-   '(sqlformat groovy-mode ws-butler counsel-projectile counsel ivy terraform-mode feature-mode php-mode prettier-js beacon use-package-ensure-system-package csharp-mode rjsx-mode flycheck go-mode typescript-mode expand-region dockerfile-mode company-lsp lsp-ui lsp-mode diminish nginx-mode twilight-theme edit-indirect deadgrep company-quickhelp flyspell-popup flyspell-correct flx-ido csv-mode shell-pop add-node-modules-path origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint elm-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))
+   '(lsp-ivy sqlformat groovy-mode ws-butler counsel-projectile counsel ivy terraform-mode feature-mode php-mode prettier-js beacon use-package-ensure-system-package csharp-mode rjsx-mode flycheck go-mode typescript-mode expand-region dockerfile-mode company-lsp lsp-ui lsp-mode diminish nginx-mode twilight-theme edit-indirect deadgrep company-quickhelp flyspell-popup flyspell-correct flx-ido csv-mode shell-pop add-node-modules-path origami json-mode highlight-indent-guides ag yaml-mode web-mode scss-mode sass-mode rust-mode inf-ruby markdown-mode js2-mode haskell-mode golint elm-mode clojure-mode hydra olivetti multiple-cursors editorconfig projectile magit yasnippet smex paredit deft undo-tree company rainbow-delimiters eval-sexp-fu htmlize twilight-theme use-package))
  '(safe-local-variable-values
    '((backup-by-copying t)
      (lsp-enable-file-watchers nil)
