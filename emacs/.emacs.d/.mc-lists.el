@@ -4,6 +4,7 @@
 (setq mc/cmds-to-run-for-all
       '(
         backward-sexp
+        c-electric-colon
         c-electric-delete-forward
         c-electric-paren
         c-electric-semi&comma
@@ -32,6 +33,8 @@
       '(
         beginning-of-buffer
         compose-mail
+        delete-window
+        end-of-buffer
         kill-region
         lsp-find-references
         markdown-outdent-or-delete
