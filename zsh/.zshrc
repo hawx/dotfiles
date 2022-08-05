@@ -20,10 +20,13 @@ prompt pure
 
 if [ -s "$HOME/.asdf/asdf.sh" ]; then
     source ~/.asdf/asdf.sh
-    # source ~/.asdf/completions/asdf.bash
 fi
 
 which fortune &> /dev/null
 if [ $? -eq 0 ]; then
   fortune clippings
 fi
+
+fpath=($HOME/.asdf/completions $HOME/.zsh/zsh-completions /usr/local/share/zsh/site-functions /usr/share/zsh/site-functions /usr/share/zsh/5.7.1/functions)
+
+autoload -Uz compinit && compinit
