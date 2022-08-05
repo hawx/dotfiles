@@ -164,7 +164,8 @@
   (lsp-prefer-flymake nil)
   (lsp-auto-guess-root t)
   (lsp-before-save-edits nil)
-  (lsp-eldoc-render-all t))
+  (lsp-eldoc-render-all t)
+  (lsp-headerline-breadcrumb-enable nil))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -186,7 +187,10 @@
 
 (use-package undo-tree
   :diminish
-  :init (global-undo-tree-mode))
+  :init
+  (global-undo-tree-mode)
+  :config
+  (setq undo-tree-history-directory-alist `(("." . ,temporary-file-directory))))
 
 (use-package deft
   :bind ("<f8>" . deft)
@@ -652,6 +656,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.mustache\\'"
   :mode "\\.html?\\'"
   :mode "\\.gotmpl\\'"
+  :mode "\\.gohtml\\'"
   :mode "\\.handlebars\\'"
   :mode "\\.vue\\'"
   :mode "\\.twig\\'"
@@ -669,6 +674,13 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (setq web-mode-engines-alist
       '(("django" . "\\.html\\'")))
+
+(use-package lsp-python-ms
+  :ensure t
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp))))  ; or lsp-deferred
 
 (defun nxml-where ()
   "Display the hierarchy of XML elements the point is on as a path."
@@ -691,6 +703,13 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (use-package yaml-mode
   :mode "\\.\\(e?ya?\\|ra\\)ml\\'")
 
+(use-package sqlformat
+  :commands (sqlformat sqlformat-buffer sqlformat-region)
+  :hook (sql-mode . sqlformat-on-save-mode)
+  :init
+  (setq sqlformat-command 'pgformatter
+        sqlformat-args '("-s2" "-g" "-u1")))
+
 (defalias 'list-buffers 'ibuffer)
 
 ;;; bindings
@@ -711,6 +730,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (global-set-key (kbd "C-z") "")
 (global-set-key (kbd "M-DEL") 'backward-kill-word)
 (global-set-key (kbd "<f1>") 'create-scratch-buffer)
+(global-set-key (kbd "<f5>") 'flycheck-previous-error)
+(global-set-key (kbd "<f6>") 'flycheck-next-error)
 (global-set-key (kbd "C-c q") 'kill-this-buffer)
 (global-set-key (kbd "C-c C-s") 'swiper-isearch)
 (global-unset-key (kbd "C-x o"))
