@@ -726,42 +726,33 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
    (interactive)
    (switch-to-buffer (get-buffer-create "*scratch*")))
 
-;; https://github.com/bbatsov/crux/blob/master/crux.el
-(defun crux-delete-file-and-buffer ()
+;; https://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
+(defun er-delete-file-and-buffer ()
   "Kill the current buffer and deletes the file it is visiting."
   (interactive)
   (let ((filename (buffer-file-name)))
     (when filename
       (if (vc-backend filename)
           (vc-delete-file filename)
-        (when (y-or-n-p (format "Are you sure you want to delete %s? " filename))
-          (delete-file filename delete-by-moving-to-trash)
+        (progn
+          (delete-file filename)
           (message "Deleted file %s" filename)
           (kill-buffer))))))
 
-(defun crux-rename-file-and-buffer ()
-  "Rename current buffer and if the buffer is visiting a file, rename it too."
+;; https://emacsredux.com/blog/2013/05/04/rename-file-and-buffer/
+(defun er-rename-file-and-buffer ()
+  "Rename the current buffer and file it is visiting."
   (interactive)
-  (when-let* ((filename (buffer-file-name))
-              (new-name (or (read-file-name "New name: " (file-name-directory filename) nil 'confirm)))
-              (containing-dir (file-name-directory new-name)))
-    ;; make sure the current buffer is saved and backed by some file
-    (when (or (buffer-modified-p) (not (file-exists-p filename)))
-      (if (y-or-n-p "Can't move file before saving it.  Would you like to save it now?")
-          (save-buffer)))
-    (if (get-file-buffer new-name)
-        (message "There already exists a buffer named %s" new-name)
-      (progn
-        (make-directory containing-dir t)
+  (let ((filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (message "Buffer is not visiting a file!")
+      (let ((new-name (read-file-name "New name: " filename)))
         (cond
-         ((vc-backend filename)
-          ;; vc-rename-file seems not able to cope with remote filenames?
-          (let ((vc-filename (if (tramp-tramp-file-p filename) (tramp-file-local-name filename) filename))
-                (vc-new-name (if (tramp-tramp-file-p new-name) (tramp-file-local-name filename) new-name)))
-            (vc-rename-file vc-filename vc-new-name)))
+         ((vc-backend filename) (vc-rename-file filename new-name))
          (t
           (rename-file filename new-name t)
           (set-visited-file-name new-name t t)))))))
+
 
 (windmove-default-keybindings)
 (global-set-key (kbd "C-c TAB") 'switch-to-previous-buffer)
@@ -774,8 +765,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (global-set-key (kbd "<f6>") 'flycheck-next-error)
 (global-set-key (kbd "C-c q") 'kill-this-buffer)
 (global-set-key (kbd "C-c C-s") 'swiper-isearch)
-(global-set-key (kbd "C-c M-d") 'crux-delete-file-and-buffer)
-(global-set-key (kbd "C-c M-r") 'crux-rename-file-and-buffer)
+(global-set-key (kbd "C-c M-d") 'er-delete-file-and-buffer)
+(global-set-key (kbd "C-c M-r") 'er-rename-file-and-buffer)
 (global-unset-key (kbd "C-x o"))
 
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
