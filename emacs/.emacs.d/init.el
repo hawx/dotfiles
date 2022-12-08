@@ -382,10 +382,6 @@ PROJECTILE: %(projectile-project-root)
     ("r" mc/mark-all-in-region-regexp :exit t)
     ("q" nil)))
 
-(use-package olivetti
-  :custom
-  (olivetti-hide-mode-line t))
-
 (use-package flycheck
   :init (global-flycheck-mode)
   :ensure-system-package (jsonlint . "npm i -g jsonlint")
@@ -433,23 +429,6 @@ PROJECTILE: %(projectile-project-root)
 (use-package flyspell-popup
   :bind ("C-c ;" . flyspell-popup-correct)
   :hook (flyspell-mode-hook #'flyspell-popup-auto-correct-mode))
-
-(defun my/origami-focus (buffer point)
-  "Show only the current node, but expand everything within that node."
-  (interactive (list (current-buffer) (point)))
-  (origami-show-only-node buffer point)
-  (origami-open-node-recursively buffer point))
-
-(use-package origami
-  :init (global-origami-mode)
-  :config (add-to-list 'origami-parser-alist '(typescript-mode . origami-c-style-parser))
-  :bind (("C-c C-o" . origami-toggle-node)
-         ("C-c C-e" . origami-close-node)
-         ("C-c C-s" . origami-open-node)
-         ("C-c C-a" . origami-reset)
-         ("C-c C-b" . my/origami-focus)
-         ("C-c C-n" . origami-show-only-node)
-         ("C-c C-m" . origami-open-node-recursively)))
 
 (use-package hydra
   :config
@@ -549,7 +528,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package go-mode
   :mode "\\(\\.go\\|go\\.mod\\|go\\.sum\\)\\'"
-  :ensure-system-package (gopls . "cd /tmp && GO111MODULE=on go get golang.org/x/tools/gopls@latest")
+  :ensure-system-package (gopls . "go install golang.org/x/tools/gopls@latest")
   :hook ((go-mode . lsp-deferred)
          (before-save . lsp-format-buffer)
          (before-save . lsp-organize-imports))
@@ -610,11 +589,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
          ("C-c ." . markdown-reference-goto-link))
   :init (setq markdown-command "multimarkdown"))
 
-(use-package inf-ruby
-  :after (ruby-mode)
-  :config
-  (add-hook 'ruby-mode-hook #'inf-ruby-minor-mode))
-
 (use-package ruby-mode
   :bind (:map ruby-mode-map ("RET" . reindent-then-newline-and-indent))
   :mode "\\.rake\\'"
@@ -641,8 +615,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package scss-mode
   :mode "\\.scss\\'")
-
-(require 'tslint-fix)
 
 (use-package typescript-mode
   :mode "\\.ts\\'"
@@ -674,16 +646,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (web-mode-enable-css-colorization t)
   (web-mode-enable-auto-closing t)
   (web-mode-enable-auto-pairing t))
-
-(setq web-mode-engines-alist
-      '(("django" . "\\.html\\'")))
-
-(use-package lsp-python-ms
-  :ensure t
-  :init (setq lsp-python-ms-auto-install-server t)
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp))))  ; or lsp-deferred
 
 (defun nxml-where ()
   "Display the hierarchy of XML elements the point is on as a path."
