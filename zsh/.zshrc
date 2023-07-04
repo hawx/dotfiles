@@ -12,7 +12,6 @@ source ~/.zsh/zsh_hooks.zsh
 source ~/.zsh/secure.zsh             # git ignored, for secure stuff only!
 
 source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.zsh/completion/pass.zsh
 
 # npm i -g pure-prompt
 autoload -U promptinit; promptinit
@@ -24,9 +23,5 @@ fi
 
 which fortune &> /dev/null
 if [ $? -eq 0 ]; then
-  fortune clippings
+    fortune clippings
 fi
-
-fpath=($HOME/.asdf/completions $HOME/.zsh/zsh-completions /usr/local/share/zsh/site-functions /usr/share/zsh/site-functions /usr/share/zsh/5.7.1/functions)
-
-autoload -Uz compinit && compinit

@@ -1,4 +1,5 @@
-autoload -U compinit && compinit
+source ~/.zsh/completion/pass.zsh
+
 zmodload -i zsh/complist
 
 # man zshcontrib
@@ -53,4 +54,5 @@ zstyle ':completion:*:ssh:*' tag-order users 'hosts:-host hosts:-domain:domain h
 zstyle ':completion:*:ssh:*' group-order hosts-domain hosts-host users hosts-ipaddr
 zstyle '*' single-ignored show
 
-fpath=(~/.zsh/zsh-completions $fpath)
+export fpath=($ASDF_DIR/completions $HOME/.zsh/zsh-completions /usr/local/share/zsh/site-functions $fpath)
+autoload -Uz compinit && compinit
