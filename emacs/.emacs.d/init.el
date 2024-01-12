@@ -135,9 +135,12 @@
 (setq-default auto-fill-mode 1)
 (setq-default indent-tabs-mode nil)
 
-(use-package diminish
+(use-package delight
+  :ensure t
   :init
-  (diminish 'eldoc-mode))
+  (delight 'eldoc-mode nil 'eldoc)
+  (delight 'flymake-mode nil 'flymake)
+  (delight 'whitespace-mode nil 'whitespace))
 
 (use-package htmlize)
 
@@ -149,12 +152,13 @@
   :hook ((text-mode prog-mode) . rainbow-delimiters-mode))
 
 (use-package subword
-  :diminish
+  :delight
   :init (global-subword-mode))
 
 (use-package eglot
   :ensure t
   :defer t
+  :delight
   :config
   (add-to-list 'eglot-server-programs '(hawx-gohtml-mode . ("html-languageserver" "--stdio")))
   :hook ((go-mode . eglot-ensure)
@@ -168,7 +172,7 @@
               ("C-c C-r" . eglot-rename)))
 
 (use-package company
-  :diminish
+  :delight
   :init (global-company-mode)
   :custom
   (company-tooltip-limit 20)
@@ -177,7 +181,7 @@
   (company-begin-commands '(self-insert-command)))
 
 (use-package undo-tree
-  :diminish
+  :delight
   :init
   (global-undo-tree-mode)
   :config
@@ -218,7 +222,7 @@
   (csv-header-lines 1))
 
 (use-package paredit
-  :diminish
+  :delight
   :hook ((emacs-lisp-mode lisp-mode scheme-mode ielm-mode clojure-mode) . paredit-mode)
   :bind (("C-f" . paredit-forward)
          ("C-b" . paredit-backward)))
@@ -231,7 +235,7 @@
          ("C-c C-c M-x" . execute-extended-command)))
 
 (use-package yasnippet
-  :diminish yas-minor-mode
+  :delight yas-minor-mode
   :init
   (yas-global-mode 1)
   :config
@@ -240,8 +244,8 @@
 
 (use-package magit
   :config (setq magit-process-finish-apply-ansi-colors t)
-  :diminish magit-auto-revert-mode
-  :diminish auto-revert-mode
+  :delight magit-auto-revert-mode
+  :delight auto-revert-mode
   :bind ("C-x g" . magit-status))
 
 ;; https://github.com/alphapapa/unpackaged.el#hydra
@@ -301,7 +305,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 (use-package projectile
   :custom
-  (projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))
+  (projectile-mode-line-function '(lambda () (format " %s" (projectile-project-name))))
   (projectile-indexing-method 'alien)
   (projectile-completion-system 'ivy)
   :defer 1
@@ -340,7 +344,7 @@ PROJECTILE: %(projectile-project-root)
   (projectile-mode))
 
 (use-package editorconfig
-  :diminish
+  :delight
   :config (editorconfig-mode 1))
 
 (use-package multiple-cursors
