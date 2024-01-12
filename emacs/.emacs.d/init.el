@@ -152,26 +152,20 @@
   :diminish
   :init (global-subword-mode))
 
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook ((js2-mode . lsp)
-         (typescript-mode . lsp)
-         (php-mode . lsp))
-  :bind (:map lsp-mode-map
-         ("C-c ." . lsp-find-references)
-         ("C-c C-r" . lsp-rename))
-  :custom
-  (lsp-prefer-flymake nil)
-  (lsp-auto-guess-root t)
-  (lsp-before-save-edits nil)
-  (lsp-eldoc-render-all t)
-  (lsp-headerline-breadcrumb-enable nil))
-
-(use-package lsp-ui
-  :commands lsp-ui-mode
-  :custom
-  (lsp-ui-sideline-enable nil)
-  (lsp-ui-doc-enable nil))
+(use-package eglot
+  :ensure t
+  :defer t
+  :config
+  (add-to-list 'eglot-server-programs '(hawx-gohtml-mode . ("html-languageserver" "--stdio")))
+  :hook ((go-mode . eglot-ensure)
+         (web-mode . eglot-ensure)
+         (js2-mode . eglot-ensure)
+         (typescript-mode . eglot-ensure)
+         (php-mode . eglot-ensure)
+         (hawx-gohtml-mode . eglot-ensure))
+  :bind (:map eglot-mode-map
+              ("C-c ." . xref-find-references)
+              ("C-c C-r" . eglot-rename)))
 
 (use-package company
   :diminish
@@ -181,9 +175,6 @@
   (company-idle-delay .3)
   (company-echo-delay 0)
   (company-begin-commands '(self-insert-command)))
-
-(use-package company-lsp
-  :commands company-lsp)
 
 (use-package undo-tree
   :diminish
@@ -308,9 +299,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (ivy-subdir ((t (:foreground "#CF6A4C"))))
   (ivy-minibuffer-match-face-1 ((t (:background "#222222")))))
 
-(use-package lsp-ivy
-  :bind ("C-c M-f" . lsp-ivy-workspace-symbol))
-
 (use-package projectile
   :custom
   (projectile-mode-line-function '(lambda () (format " [%s]" (projectile-project-name))))
@@ -382,50 +370,6 @@ PROJECTILE: %(projectile-project-root)
     ("r" mc/mark-all-in-region-regexp :exit t)
     ("q" nil)))
 
-(use-package flycheck
-  :init (global-flycheck-mode)
-  :ensure-system-package (jsonlint . "npm i -g jsonlint")
-  :config
-  ;; disable some checkers
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers
-                        '(javascript-jshint json-python-json emacs-lisp-checkdoc typescript-tslint)))
-
-  (setq flycheck-checker-error-threshold 1000)
-
-  (flycheck-def-config-file-var flycheck-my-typescript-tsconfig
-      my-typescript-tslint "tsconfig.json"
-    :safe #'stringp
-    :package-version '(flycheck . "27"))
-
-  (flycheck-def-config-file-var flycheck-my-typescript-tslint-config
-      my-typescript-tslint "tslint.json"
-    :safe #'stringp
-    :package-version '(flycheck . "27"))
-
-  (flycheck-define-checker my-typescript-tslint
-    "TypeScript style checker using TSLint."
-    :command ("tslint" "--format" "json"
-              (config-file "--config" flycheck-my-typescript-tslint-config)
-              (config-file "--project" flycheck-my-typescript-tsconfig)
-              source-inplace)
-    :error-parser flycheck-parse-tslint
-    :modes (typescript-mode))
-
-  (add-to-list 'flycheck-checkers 'my-typescript-tslint))
-
-(defun my/use-eslint-from-node-modules ()
-  (let* ((root (locate-dominating-file
-                (or (buffer-file-name) default-directory)
-                "node_modules"))
-         (eslint (and root
-                      (expand-file-name "node_modules/eslint/bin/eslint.js"
-                                        root))))
-    (when (and eslint (file-executable-p eslint))
-      (setq-local flycheck-javascript-eslint-executable eslint))))
-
-(add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
-
 (use-package flyspell-popup
   :bind ("C-c ;" . flyspell-popup-correct)
   :hook (flyspell-mode-hook #'flyspell-popup-auto-correct-mode))
@@ -486,8 +430,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (setq-default tab-width 2)
 (setq-default c-basic-offset 2)
 
-(use-package add-node-modules-path
-  :hook (js2-mode typescript-mode web-mode))
+;; (use-package add-node-modules-path
+;;   :hook (js2-mode typescript-mode web-mode))
 
 (defun clojure-config/hook ()
   (rainbow-delimiters-mode)
@@ -529,9 +473,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (use-package go-mode
   :mode "\\(\\.go\\|go\\.mod\\|go\\.sum\\)\\'"
   :ensure-system-package (gopls . "go install golang.org/x/tools/gopls@latest")
-  :hook ((go-mode . lsp-deferred)
-         (before-save . lsp-format-buffer)
-         (before-save . lsp-organize-imports))
+  :hook ((before-save . eglot-format))
   :bind (:map go-mode-map
               ("C-x t f" . go-test-current-file)
               ("C-x t t" . go-test-current-test)))
@@ -631,7 +573,6 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :mode "\\.mustache\\'"
   :mode "\\.html?\\'"
   :mode "\\.gotmpl\\'"
-  :mode "\\.gohtml\\'"
   :mode "\\.handlebars\\'"
   :mode "\\.vue\\'"
   :mode "\\.twig\\'"
@@ -646,6 +587,10 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (web-mode-enable-css-colorization t)
   (web-mode-enable-auto-closing t)
   (web-mode-enable-auto-pairing t))
+
+(define-derived-mode hawx-gohtml-mode web-mode "gohtml"
+    "A major mode derived from web-mode for editing gohtml files")
+(add-to-list 'auto-mode-alist '("\\.gohtml\\'" . hawx-gohtml-mode))
 
 (defun nxml-where ()
   "Display the hierarchy of XML elements the point is on as a path."
@@ -723,8 +668,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 (global-set-key (kbd "C-z") "")
 (global-set-key (kbd "M-DEL") 'backward-kill-word)
 (global-set-key (kbd "<f1>") 'create-scratch-buffer)
-(global-set-key (kbd "<f5>") 'flycheck-previous-error)
-(global-set-key (kbd "<f6>") 'flycheck-next-error)
+(global-set-key (kbd "<f5>") 'flymake-goto-prev-error)
+(global-set-key (kbd "<f6>") 'flymake-goto-next-error)
 (global-set-key (kbd "C-c q") 'kill-this-buffer)
 (global-set-key (kbd "C-c C-s") 'swiper-isearch)
 (global-set-key (kbd "C-c M-d") 'er-delete-file-and-buffer)

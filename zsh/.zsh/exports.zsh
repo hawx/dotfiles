@@ -36,4 +36,4 @@ export PATH=$PATH:$HOME/.cargo/bin:$GOPATH/bin
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/dev/bin:$HOME/dev/dotfiles/bin:$GOPATH/bin
 export PATH=$PATH:$HOME/dev/crypto-utils/bin
-export PATH=$PATH:$(npm bin --global 2> /dev/null)
+export PATH=$PATH:$(asdf where nodejs)/bin
