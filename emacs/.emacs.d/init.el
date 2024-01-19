@@ -474,13 +474,18 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   :config
   (add-to-list 'company-backends 'company-elm))
 
+(defun hawx-eglot-organize-imports () (interactive)
+	     (eglot-code-actions nil nil "source.organizeImports" t))
+
 (use-package go-mode
   :mode "\\(\\.go\\|go\\.mod\\|go\\.sum\\)\\'"
   :ensure-system-package (gopls . "go install golang.org/x/tools/gopls@latest")
-  :hook ((before-save . eglot-format))
   :bind (:map go-mode-map
               ("C-x t f" . go-test-current-file)
-              ("C-x t t" . go-test-current-test)))
+              ("C-x t t" . go-test-current-test))
+  :config
+  (add-hook 'before-save-hook 'eglot-format-buffer)
+  (add-hook 'before-save-hook 'hawx-eglot-organize-imports nil t))
 
 (use-package haskell-mode
   :mode (("\\.hcr\\'" . ghc-core-mode)
@@ -593,7 +598,7 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
   (web-mode-enable-auto-pairing t))
 
 (define-derived-mode hawx-gohtml-mode web-mode "gohtml"
-    "A major mode derived from web-mode for editing gohtml files")
+  "A major mode derived from web-mode for editing gohtml files")
 (add-to-list 'auto-mode-alist '("\\.gohtml\\'" . hawx-gohtml-mode))
 
 (defun nxml-where ()
@@ -616,6 +621,8 @@ _w_ whitespace-mode        %(mode-is-on 'whitespace-mode)
 
 (use-package yaml-mode
   :mode "\\.\\(e?ya?\\|ra\\)ml\\'")
+
+(use-package terraform-mode)
 
 (use-package sqlformat
   :commands (sqlformat sqlformat-buffer sqlformat-region)
