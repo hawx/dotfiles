@@ -1,6 +1,10 @@
 # Mostly stolen from https://github.com/spicycode/ze-best-zsh-config
 
-fpath+=("$(brew --prefix)/share/zsh/site-functions")
+which brew &> /dev/null
+if [ $? -eq 0 ]; then
+    fpath+=("$(brew --prefix)/share/zsh/site-functions")
+fi
+
 if [ -s "$HOME/.asdf/asdf.sh" ]; then
     source ~/.asdf/asdf.sh
 fi
