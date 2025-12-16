@@ -14,7 +14,7 @@ bindkey "^F"      forward-char                         # ctrl-f
 bindkey "^B"      backward-char                        # ctrl-b
 
 # History search with up and down arrow keys
-bindkey "^[[A"    history-beginning-search-backward
-bindkey "^[[B"    history-beginning-search-forward
+bindkey "$key[Up]"    history-beginning-search-backward
+bindkey "$key[Down]"  history-beginning-search-forward
 
 bindkey -e   # Default to standard emacs bindings, regardless of editor string
